@@ -1,0 +1,2 @@
+# One link per line. Lines starting with # are ignored.
+https://example.com/news/article-1
