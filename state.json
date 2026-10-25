@@ -1,0 +1,5 @@
+{
+ "https://example.com/news/article-1": {
+  "err": "404 Client Error: Not Found for url: https://example.com/news/article-1"
+ }
+}
