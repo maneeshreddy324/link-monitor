@@ -1,7 +1,4 @@
 {
-  "https://aerocorner.com/": {
-    "err": "403 Client Error: Forbidden for url: https://aerocorner.com/"
-  },
   "https://skiesmag.com/": {
     "error": "403 Client Error: Forbidden for url: https://skiesmag.com/",
     "checked_at": "2026-10-26T17:25:31.241452+00:00"
@@ -13,7 +10,7 @@
     "modified": "",
     "signature": "29fa77a6586e4e6787ee22ccbd4ba228648b7d58f62d52a448f6d4c145aaecd1",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:31.275797+00:00",
+    "checked_at": "2026-10-26T17:39:53.052015+00:00",
     "content_length": 389,
     "url": "https://www.flightaware.com/news/",
     "label": "FlightAware"
@@ -25,70 +22,34 @@
     "modified": "",
     "signature": "3a16af457c5f54864a9eed3c211fa49f3d12e5941d6e8d74b4a67762532bcbee",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:31.300145+00:00",
+    "checked_at": "2026-10-26T17:39:53.071050+00:00",
     "content_length": 8478,
     "url": "https://aviationweek.com/",
     "label": "Aviation Week"
   },
-  "https://www.cbsnews.com/": {
-    "title": "CBS News | Breaking News, Top Stories & Exclusive Coverage",
-    "description": "Stay informed on today's latest breaking news and exclusive scoops from CBS News. Follow current events in the U.S. and around the world, along with trending stories in politics, health and more key topics.",
+  "https://www.ctvnews.ca/": {
+    "title": "CTV News – Breaking News and Video, Canada News Today",
+    "description": "Get live updates on the latest local, national, and international news, including trusted reporting on politics, health, business, sports and more.",
     "published": "",
     "modified": "",
-    "signature": "ee1af3b059a3299c02b08c8b06a038a8919480c019664e6cac8d4972b9f4fb5a",
+    "signature": "b81bf7f0fb6950945518a9af4d6395abbdbd210fa871209e8f69abe033f8944a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:31.298561+00:00",
-    "content_length": 72,
-    "url": "https://www.cbsnews.com/",
-    "label": "CBS News"
+    "checked_at": "2026-10-26T17:39:53.786146+00:00",
+    "content_length": 7532,
+    "url": "https://www.ctvnews.ca/",
+    "label": "CTV News"
   },
-  "https://www.faa.gov/newsroom": {
-    "title": "Newsroom",
-    "description": "",
+  "https://abcnews.go.com/": {
+    "title": "ABC News - Breaking News, Latest News and Videos",
+    "description": "Your trusted source for breaking news, analysis, exclusive interviews, headlines, and videos at ABCNews.com",
     "published": "",
     "modified": "",
-    "signature": "38b2a27cb1438bc6fef6825f2da4ec2c96d08b6eb3c08b8ad85edd296b967dae",
+    "signature": "8d3c4f127fb0f2aeb18d60b0c834aafc073b8570f4f06a7ff731e883554b4a9e",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:31.307704+00:00",
-    "content_length": 42,
-    "url": "https://www.faa.gov/newsroom",
-    "label": "FAA News"
-  },
-  "https://www.nbcnews.com/": {
-    "title": "NBC News - Breaking Headlines and Video Reports on World, U.S. and Local Angles",
-    "description": "Go to NBCNews.com for breaking news, videos, and the latest top stories in world news, business, politics, health and pop culture.",
-    "published": "",
-    "modified": "",
-    "signature": "b41bcee7e793dbdd764d7d7e13e6e26477876dc6aeec173f194699c5ee39c2a1",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:31.571105+00:00",
-    "content_length": 16931,
-    "url": "https://www.nbcnews.com/",
-    "label": "NBC News"
-  },
-  "https://www.cbc.ca/news": {
-    "title": "CBC News - Latest Canada, World, Entertainment and Business News",
-    "description": "The latest news from across Canada and around the world.",
-    "published": "",
-    "modified": "",
-    "signature": "96ce262c82ea186882b42c670771e43c9b2385a3a3e71ef5c7dae4184067d32c",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:31.627788+00:00",
-    "content_length": 1469,
-    "url": "https://www.cbc.ca/news",
-    "label": "CBC News"
-  },
-  "https://airwaysmag.com/": {
-    "title": "Airways | Home",
-    "description": "Airways' latest updates, breakthroughs, and stories from the high-flying realm of airlines, aircraft, manufacturers, and the people who make it all possible.",
-    "published": "",
-    "modified": "",
-    "signature": "77fdb0619857aa85e4bd3534a9e3ab2842443a0aca77c3603e40efb136224447",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:31.658873+00:00",
-    "content_length": 294,
-    "url": "https://airwaysmag.com/",
-    "label": "Airways Magazine"
+    "checked_at": "2026-10-26T17:39:54.104731+00:00",
+    "content_length": 9825,
+    "url": "https://abcnews.go.com/",
+    "label": "ABC News"
   },
   "https://www.flyingmag.com/": {
     "title": "Aviation Stories, Aircraft Reviews, & Pilot Resources",
@@ -97,38 +58,98 @@
     "modified": "2026-06-22T15:52:56-04:00",
     "signature": "64c92932713ac3299495ac6ed0f444c3da3d77291ce2726b0c71be9b7f3bee50",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:31.700659+00:00",
+    "checked_at": "2026-10-26T17:39:54.203912+00:00",
     "content_length": 53,
     "url": "https://www.flyingmag.com/",
     "label": "Flying Magazine"
   },
-  "https://www.ctvnews.ca/": {
-    "title": "CTV News – Breaking News and Video, Canada News Today",
-    "description": "Get live updates on the latest local, national, and international news, including trusted reporting on politics, health, business, sports and more.",
+  "https://www.cbsnews.com/": {
+    "title": "CBS News | Breaking News, Top Stories & Exclusive Coverage",
+    "description": "Stay informed on today's latest breaking news and exclusive scoops from CBS News. Follow current events in the U.S. and around the world, along with trending stories in politics, health and more key topics.",
     "published": "",
     "modified": "",
-    "signature": "96dfbc5d5ea62ac66364aef2f8490c7052810533066c58ecc94012a95595a12e",
+    "signature": "ee1af3b059a3299c02b08c8b06a038a8919480c019664e6cac8d4972b9f4fb5a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:31.787530+00:00",
-    "content_length": 7571,
-    "url": "https://www.ctvnews.ca/",
-    "label": "CTV News"
+    "checked_at": "2026-10-26T17:39:54.237321+00:00",
+    "content_length": 72,
+    "url": "https://www.cbsnews.com/",
+    "label": "CBS News"
+  },
+  "https://airwaysmag.com/": {
+    "title": "Airways | Home",
+    "description": "Airways' latest updates, breakthroughs, and stories from the high-flying realm of airlines, aircraft, manufacturers, and the people who make it all possible.",
+    "published": "",
+    "modified": "",
+    "signature": "77fdb0619857aa85e4bd3534a9e3ab2842443a0aca77c3603e40efb136224447",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:54.238804+00:00",
+    "content_length": 294,
+    "url": "https://airwaysmag.com/",
+    "label": "Airways Magazine"
+  },
+  "https://www.nbcnews.com/": {
+    "title": "NBC News - Breaking Headlines and Video Reports on World, U.S. and Local Angles",
+    "description": "Go to NBCNews.com for breaking news, videos, and the latest top stories in world news, business, politics, health and pop culture.",
+    "published": "",
+    "modified": "",
+    "signature": "6cb541d1936c575b54a756af083aae3c6051174bad4c8bb19f6d0e136b147583",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:54.255402+00:00",
+    "content_length": 16936,
+    "url": "https://www.nbcnews.com/",
+    "label": "NBC News"
+  },
+  "https://www.cbc.ca/news": {
+    "title": "CBC News - Latest Canada, World, Entertainment and Business News",
+    "description": "The latest news from across Canada and around the world.",
+    "published": "",
+    "modified": "",
+    "signature": "a313ff81503a03909fd6a906780ae44791e90d95718f64754f1f437055aa925d",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:54.263268+00:00",
+    "content_length": 1506,
+    "url": "https://www.cbc.ca/news",
+    "label": "CBC News"
+  },
+  "https://www.faa.gov/newsroom": {
+    "title": "Newsroom",
+    "description": "",
+    "published": "",
+    "modified": "",
+    "signature": "38b2a27cb1438bc6fef6825f2da4ec2c96d08b6eb3c08b8ad85edd296b967dae",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:54.316258+00:00",
+    "content_length": 42,
+    "url": "https://www.faa.gov/newsroom",
+    "label": "FAA News"
+  },
+  "https://edition.cnn.com/": {
+    "title": "Breaking News, Latest News and Videos | CNN",
+    "description": "View the latest news and breaking news today for U.S., world, weather, entertainment, politics and health at CNN.com.",
+    "published": "",
+    "modified": "",
+    "signature": "65f90da38784e664dfdf609d3a38c50fb05a8228bb8191cff85aa1bd15536034",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:54.322321+00:00",
+    "content_length": 8906,
+    "url": "https://edition.cnn.com/",
+    "label": "CNN"
+  },
+  "https://wingsmagazine.com/": {
+    "title": "Wings Magazine - Canada's National Aviation Resource",
+    "description": "Wings Magazine is Canada's National Aviation Resource: comprehensive news coverage, job board, classifieds, blog, industry events and more!",
+    "published": "",
+    "modified": "",
+    "signature": "f2bb271339c33191c683c38bd8030ad54755f54eb27e92bdb86495d77d6ec954",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:54.326926+00:00",
+    "content_length": 3257,
+    "url": "https://wingsmagazine.com/",
+    "label": "Wings Magazine"
   },
   "https://www.flightglobal.com/": {
     "error": "403 Client Error: Forbidden for url: https://www.flightglobal.com/",
     "checked_at": "2026-10-26T17:25:31.897557+00:00"
-  },
-  "https://abcnews.go.com/": {
-    "title": "ABC News - Breaking News, Latest News and Videos",
-    "description": "Your trusted source for breaking news, analysis, exclusive interviews, headlines, and videos at ABCNews.com",
-    "published": "",
-    "modified": "",
-    "signature": "e311f091771db2ae6429d7366f306fb5433d0019b458eaa04d68b273f8afb741",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:32.062888+00:00",
-    "content_length": 10531,
-    "url": "https://abcnews.go.com/",
-    "label": "ABC News"
   },
   "https://www.milenio.com/": {
     "title": "MILENIO | Noticias de hoy en México y el mundo al momento",
@@ -137,7 +158,7 @@
     "modified": "",
     "signature": "88f9ccd68626d58baf7873a0cc34b14f9bbb8bdb240480f9a28f1f7454f2f2c9",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:32.092331+00:00",
+    "checked_at": "2026-10-26T17:39:54.844689+00:00",
     "content_length": 4633,
     "url": "https://www.milenio.com/",
     "label": "Milenio"
@@ -147,33 +168,41 @@
     "description": "Globalnews.ca – Watch and read Canada’s Breaking news plus Business, Health, Politics and World News",
     "published": "",
     "modified": "",
-    "signature": "039561cf147e5cc3b4b7b7efbab8da9ad6d5491ec34a74561faf578c7700a7e7",
+    "signature": "dd2c65656bca56c1e26daa3a6417bd920b1f18f0f8cb7528aec2563e651e6790",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:32.276575+00:00",
-    "content_length": 7222,
+    "checked_at": "2026-10-26T17:39:54.885410+00:00",
+    "content_length": 7269,
     "url": "https://globalnews.ca/",
     "label": "Global News"
   },
-  "https://wingsmagazine.com/": {
-    "title": "Wings Magazine - Canada's National Aviation Resource",
-    "description": "Wings Magazine is Canada's National Aviation Resource: comprehensive news coverage, job board, classifieds, blog, industry events and more!",
+  "https://www.bbc.com/news": {
+    "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and around the world",
+    "description": "Visit BBC News for the latest news, breaking news, video, audio and analysis. BBC News provides trusted World, U.S. and U.K. news as well as local and regional perspectives. Also entertainment, climate, business, science, technology and health news.",
     "published": "",
     "modified": "",
-    "signature": "f2bb271339c33191c683c38bd8030ad54755f54eb27e92bdb86495d77d6ec954",
+    "signature": "30a2c7a5e1d52fdea7124a26ae81c10161101aa28c6bf1c95793d4b140984ae2",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:32.502523+00:00",
-    "content_length": 3257,
-    "url": "https://wingsmagazine.com/",
-    "label": "Wings Magazine"
+    "checked_at": "2026-10-26T17:39:54.993363+00:00",
+    "content_length": 7228,
+    "url": "https://www.bbc.com/news",
+    "label": "BBC News"
+  },
+  "https://aviation-safety.net/": {
+    "error": "403 Client Error: Forbidden for url: https://aviation-safety.net/",
+    "checked_at": "2026-10-26T17:25:32.816972+00:00"
+  },
+  "https://www.airlinerworld.com/": {
+    "error": "403 Client Error: Forbidden for url: https://www.airlinerworld.com/",
+    "checked_at": "2026-10-26T17:25:32.806509+00:00"
   },
   "https://simpleflying.com/": {
     "title": "Simple Flying - Aviation News & Insight",
     "description": "The leading independent voice for aviation news and insight.",
     "published": "",
     "modified": "",
-    "signature": "cd8dbf7966e11b5fe846f50a09da65e2b0bf027b093523bbfe47dae6ab5e27d7",
+    "signature": "1d9468056561d757a8bed24b75a50e6c02b7e95a92b6be7cdedaeda2a8cd6b89",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:32.506384+00:00",
+    "checked_at": "2026-10-26T17:39:55.220538+00:00",
     "content_length": 16731,
     "url": "https://simpleflying.com/",
     "label": "Simple Flying"
@@ -185,54 +214,10 @@
     "modified": "",
     "signature": "eed127cefb124f0f7ea481d6c68e30533a7f1a92f158032dac6349940bb0c957",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:32.768964+00:00",
+    "checked_at": "2026-10-26T17:39:55.432588+00:00",
     "content_length": 644,
     "url": "https://www.eluniversal.com.mx/",
     "label": "El Universal"
-  },
-  "https://www.bbc.com/news": {
-    "title": "BBC News - Breaking news, video and the latest top stories from the U.S. and around the world",
-    "description": "Visit BBC News for the latest news, breaking news, video, audio and analysis. BBC News provides trusted World, U.S. and U.K. news as well as local and regional perspectives. Also entertainment, climate, business, science, technology and health news.",
-    "published": "",
-    "modified": "",
-    "signature": "3b096aea4562bdf72aa4df0ef37789be25ce1fb0b4c7624dcd5a9fbeea07d41f",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:32.790093+00:00",
-    "content_length": 7284,
-    "url": "https://www.bbc.com/news",
-    "label": "BBC News"
-  },
-  "https://www.airlinerworld.com/": {
-    "error": "403 Client Error: Forbidden for url: https://www.airlinerworld.com/",
-    "checked_at": "2026-10-26T17:25:32.806509+00:00"
-  },
-  "https://aviation-safety.net/": {
-    "error": "403 Client Error: Forbidden for url: https://aviation-safety.net/",
-    "checked_at": "2026-10-26T17:25:32.816972+00:00"
-  },
-  "https://edition.cnn.com/": {
-    "title": "Breaking News, Latest News and Videos | CNN",
-    "description": "View the latest news and breaking news today for U.S., world, weather, entertainment, politics and health at CNN.com.",
-    "published": "",
-    "modified": "",
-    "signature": "7bfa128d1e60a283d69fce0b103aef1356cfb0f9cd78f61601d4668ee8635166",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:33.006202+00:00",
-    "content_length": 8908,
-    "url": "https://edition.cnn.com/",
-    "label": "CNN"
-  },
-  "https://www.dw.com/en/": {
-    "title": "News and current affairs from Germany and around the world",
-    "description": "News, off-beat stories and analysis of German and international affairs. Dive deeper with our features from Europe and beyond. Watch our 24/7 TV stream.",
-    "published": "",
-    "modified": "",
-    "signature": "93b4c77b23f9009447c7254be3ff24e6e94efc9035f98cc466f0f32631e3e05b",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:33.148246+00:00",
-    "content_length": 8181,
-    "url": "https://www.dw.com/en/",
-    "label": "Deutsche Welle"
   },
   "https://www.brusselstimes.com/": {
     "title": "The Brussels Times",
@@ -241,7 +226,7 @@
     "modified": "",
     "signature": "495beebafd8b61b43559e1a87a31711d8578e290a60f67ca9a2e7d63ed3836ee",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:33.153170+00:00",
+    "checked_at": "2026-10-26T17:39:55.520815+00:00",
     "content_length": 0,
     "url": "https://www.brusselstimes.com/",
     "label": "Brussels Times"
@@ -253,14 +238,22 @@
     "modified": "",
     "signature": "a044a420b22c290ae7ab9904c186d8d8e6d1c0d6afb56e6711aba819e219e711",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:33.233741+00:00",
+    "checked_at": "2026-10-26T17:39:55.722746+00:00",
     "content_length": 4052,
     "url": "https://www.aeroinside.com/",
     "label": "AeroInside"
   },
-  "https://www.france24.com/en/": {
-    "error": "403 Client Error: Forbidden for url: https://www.france24.com/en/",
-    "checked_at": "2026-10-26T17:25:33.390610+00:00"
+  "https://www.dw.com/en/": {
+    "title": "News and current affairs from Germany and around the world",
+    "description": "News, off-beat stories and analysis of German and international affairs. Dive deeper with our features from Europe and beyond. Watch our 24/7 TV stream.",
+    "published": "",
+    "modified": "",
+    "signature": "93b4c77b23f9009447c7254be3ff24e6e94efc9035f98cc466f0f32631e3e05b",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:55.734200+00:00",
+    "content_length": 8181,
+    "url": "https://www.dw.com/en/",
+    "label": "Deutsche Welle"
   },
   "https://avherald.com/": {
     "title": "The Aviation Herald",
@@ -269,34 +262,38 @@
     "modified": "",
     "signature": "88a6202979ce24c1949df4d4a0793f6e67c0b50ae5beed0ac939f26e8cce7629",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:33.564950+00:00",
+    "checked_at": "2026-10-26T17:39:55.878971+00:00",
     "content_length": 4154,
     "url": "https://avherald.com/",
     "label": "Aviation Herald"
   },
-  "https://www.lemonde.fr/en/": {
-    "title": "Le Monde - World news, culture and opinion from the unique perspective of the leading French newspaper",
-    "description": "France's leading newspaper brings you the latest coverage from France, Europe, and all around the world, unique perspectives and in-depth analysis.",
-    "published": "",
-    "modified": "",
-    "signature": "7ab41cdef747d6fe31ec9d16b1b2ba6ccf1fe52e6461d4db1579fdad2005b893",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:33.588970+00:00",
-    "content_length": 8534,
-    "url": "https://www.lemonde.fr/en/",
-    "label": "Le Monde"
+  "https://www.france24.com/en/": {
+    "error": "403 Client Error: Forbidden for url: https://www.france24.com/en/",
+    "checked_at": "2026-10-26T17:25:33.390610+00:00"
   },
   "https://www.ch-aviation.com/": {
     "title": "ch-aviation",
     "description": "Most extensive and up to date airline knowledge base: More than 50,000 aircraft, 6,500 airports and 5,000 airlines, access to fleet lists, worldwide airline schedules and route networks, airline management contacts, airline capacity and frequency analysis, airline PSS directory, up to date airline and route network news.",
     "published": "",
     "modified": "",
-    "signature": "772bdb7b8e2bcdf604a8005141a7191782dfa90f27d88bd35790a2e770c736a8",
+    "signature": "413c8cb9a2538e5b5c4ff5162348b2808ace64cfd9eb8b85f56a243a474fcc6b",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:33.734982+00:00",
-    "content_length": 5981,
+    "checked_at": "2026-10-26T17:39:56.239025+00:00",
+    "content_length": 6577,
     "url": "https://www.ch-aviation.com/",
     "label": "ch-aviation"
+  },
+  "https://www.swissinfo.ch/eng/": {
+    "title": "Switzerland - News and perspectives",
+    "description": "SWI swissinfo.ch, your link to Switzerland. Providing independent reporting in 10 languages, focusing on democracy, foreign policy, and more.",
+    "published": "",
+    "modified": "2026-10-07T09:53:10+00:00",
+    "signature": "dee5b9f5245ce2f1d9051bd8f85677d5862d6bac1f0c7bb598f18c8665c8fee6",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:56.348646+00:00",
+    "content_length": 54,
+    "url": "https://www.swissinfo.ch/eng/",
+    "label": "SwissInfo"
   },
   "https://elpais.com/": {
     "error": "403 Client Error: Forbidden for url: https://elpais.com/",
@@ -309,22 +306,22 @@
     "modified": "",
     "signature": "86547e320c86a2d513ee1416d1c0f07aed67377cc5ac75bc78c886819693d91b",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:34.064581+00:00",
+    "checked_at": "2026-10-26T17:39:56.526199+00:00",
     "content_length": 5,
     "url": "https://www.aviaciondigital.com/",
     "label": "Aviacion Digital"
   },
-  "https://www.clareherald.com/": {
-    "title": "https://www.clareherald.com/",
-    "description": "",
+  "https://www.lemonde.fr/en/": {
+    "title": "Le Monde - World news, culture and opinion from the unique perspective of the leading French newspaper",
+    "description": "France's leading newspaper brings you the latest coverage from France, Europe, and all around the world, unique perspectives and in-depth analysis.",
     "published": "",
     "modified": "",
-    "signature": "d1f51a577da6d9e54d42501dcb447f3a302c6db3e78d4bb1fbc6a08dc8c70250",
+    "signature": "e4f36e93c240f207663815ab39e03b6ea2317b7d20978178aeb35ec6d7f448a5",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:34.295418+00:00",
-    "content_length": 38962,
-    "url": "https://www.clareherald.com/",
-    "label": "Clare Herald"
+    "checked_at": "2026-10-26T17:39:56.583639+00:00",
+    "content_length": 8581,
+    "url": "https://www.lemonde.fr/en/",
+    "label": "Le Monde"
   },
   "https://www.dutchnews.nl/": {
     "title": "DutchNews.nl",
@@ -333,22 +330,22 @@
     "modified": "",
     "signature": "a7df6549675bd523ba078b09ac7ccdc912b2cd7a17a1089c4495aae9f6425e1b",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:34.379810+00:00",
+    "checked_at": "2026-10-26T17:39:56.702313+00:00",
     "content_length": 5874,
     "url": "https://www.dutchnews.nl/",
     "label": "DutchNews"
   },
-  "https://www.preferente.com/": {
-    "title": "Preferente.com",
-    "description": "Diario digital de Turismo líder con noticias de agencias de viajes, noticias de hoteles y noticias de aerolíneas y compañías aéreas. Revista de turismo e información para profesionales.",
+  "https://www.clareherald.com/": {
+    "title": "https://www.clareherald.com/",
+    "description": "",
     "published": "",
     "modified": "",
-    "signature": "ceb639e18c3164f76f269e392822cd3b5801fda71fa25d76318c1ef30bbcb820",
+    "signature": "d1f51a577da6d9e54d42501dcb447f3a302c6db3e78d4bb1fbc6a08dc8c70250",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:34.468379+00:00",
-    "content_length": 12009,
-    "url": "https://www.preferente.com/",
-    "label": "Preferente"
+    "checked_at": "2026-10-26T17:39:56.864836+00:00",
+    "content_length": 38962,
+    "url": "https://www.clareherald.com/",
+    "label": "Clare Herald"
   },
   "https://indianexpress.com/": {
     "error": "403 Client Error: Forbidden for url: https://indianexpress.com/",
@@ -359,24 +356,44 @@
     "description": "Irish news, world news and breaking updates. Get Ireland news, business, politics, sport, lifestyle, culture, podcasts, video and more from The Irish Times, the definitive brand of award-winning, in-depth journalism.",
     "published": "",
     "modified": "",
-    "signature": "30bbe12705c69b80f72abc2e1e8946d23bf6e09db53e6bd5024927b3ef1f8067",
+    "signature": "66c3d9f03b14251a49492d9e7ded8ee59a0e794af56fb481760d589d223fc967",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:34.798229+00:00",
-    "content_length": 12421,
+    "checked_at": "2026-10-26T17:39:57.188541+00:00",
+    "content_length": 12425,
     "url": "https://www.irishtimes.com/",
     "label": "Irish Times"
+  },
+  "https://www.preferente.com/": {
+    "title": "Preferente.com",
+    "description": "Diario digital de Turismo líder con noticias de agencias de viajes, noticias de hoteles y noticias de aerolíneas y compañías aéreas. Revista de turismo e información para profesionales.",
+    "published": "",
+    "modified": "",
+    "signature": "ceb639e18c3164f76f269e392822cd3b5801fda71fa25d76318c1ef30bbcb820",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:57.301252+00:00",
+    "content_length": 12009,
+    "url": "https://www.preferente.com/",
+    "label": "Preferente"
+  },
+  "https://www.ndtv.com/": {
+    "error": "403 Client Error: Forbidden for url: https://www.ndtv.com/",
+    "checked_at": "2026-10-26T17:25:35.302467+00:00"
   },
   "https://timesofindia.indiatimes.com/": {
     "title": "US News: US News, Top News in India, US election news, Business news, Sports & International News | Times of India",
     "description": "Read Top News in India and around the World on Times of India. Breaking news coverage and analysis on US presidential election, politics, current affairs, business & sports.",
     "published": "",
     "modified": "",
-    "signature": "59e4dc7098b48d9ca7f23b9967df525c33f2e21d1f067c381cbf36610b54e99e",
+    "signature": "c0afe94ebfeaeda408e10ed10b9101c5dad2c8c4d972cf6813aa9aa4f0adf6b3",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:35.127590+00:00",
-    "content_length": 33541,
+    "checked_at": "2026-10-26T17:39:57.704311+00:00",
+    "content_length": 33569,
     "url": "https://timesofindia.indiatimes.com/",
     "label": "Times of India"
+  },
+  "https://www.ndtvprofit.com/": {
+    "error": "403 Client Error: Forbidden for url: https://www.ndtvprofit.com/",
+    "checked_at": "2026-10-26T17:25:35.540221+00:00"
   },
   "https://www.newindianexpress.com/": {
     "title": "India News,Latest News,Today's News Headlines,World,Live Updates,Politics,Business,Sports,Entertainment: The New Indian Express",
@@ -385,70 +402,62 @@
     "modified": "",
     "signature": "e63d87d6614d3c525a7234e0055e7b7f3aefe7db915e05704f7b5cb2d5edb515",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:35.188388+00:00",
+    "checked_at": "2026-10-26T17:39:57.785419+00:00",
     "content_length": 1316,
     "url": "https://www.newindianexpress.com/",
     "label": "New Indian Express"
-  },
-  "https://www.ndtv.com/": {
-    "error": "403 Client Error: Forbidden for url: https://www.ndtv.com/",
-    "checked_at": "2026-10-26T17:25:35.302467+00:00"
-  },
-  "https://www.corriere.it/": {
-    "title": "Corriere della Sera: News e Ultime notizie in tempo reale da Italia e Mondo",
-    "description": "Corriere della Sera è il primo quotidiano online aggiornato con le ultime notizie di Cronaca, Politica, Economia, Sport, Esteri, Spettacoli, Cultura e Tecnologia.",
-    "published": "",
-    "modified": "",
-    "signature": "9f295678fc184364e71eee22ea1b740d1cb133411aa96996dac6b1fe83a28746",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:35.514307+00:00",
-    "content_length": 25361,
-    "url": "https://www.corriere.it/",
-    "label": "Corriere della Sera"
-  },
-  "https://www.ndtvprofit.com/": {
-    "error": "403 Client Error: Forbidden for url: https://www.ndtvprofit.com/",
-    "checked_at": "2026-10-26T17:25:35.540221+00:00"
   },
   "https://www.ansa.it/english/": {
     "title": "ANSA English",
     "description": "",
     "published": "",
     "modified": "",
-    "signature": "8fc40ad298a9b33e61d4e12b00d9d162aa883f5e761346dbc8657655e4f858c8",
+    "signature": "a5ad5454b3fd6d49d647525eb2f69c434dcdc9fcb868fac486c84e9f368afbdd",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:35.653700+00:00",
-    "content_length": 12373,
+    "checked_at": "2026-10-26T17:39:58.383093+00:00",
+    "content_length": 12370,
     "url": "https://www.ansa.it/english/",
     "label": "ANSA"
-  },
-  "https://www.hindustantimes.com/": {
-    "title": "Hindustan Times: Breaking News, Latest News, India News, World News & Cricket Today's Headlines | Hindustan Times",
-    "description": "Hindustan Times: Stay updated with Hindustan Times for the top India news, world events, and breaking stories. Get real-time updates on politics, wars, live cricket scores, entertainment news, and lifestyle updates.",
-    "published": "",
-    "modified": "",
-    "signature": "320ff40b24f37372284cc716997f69d7cda2f45dbb3718d9093ab5ea89f28efa",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:35.850511+00:00",
-    "content_length": 14334,
-    "url": "https://www.hindustantimes.com/",
-    "label": "Hindustan Times"
   },
   "https://www.indiatvnews.com/": {
     "error": "403 Client Error: Forbidden for url: https://www.indiatvnews.com/",
     "checked_at": "2026-10-26T17:25:35.852465+00:00"
+  },
+  "https://www.corriere.it/": {
+    "title": "Corriere della Sera: News e Ultime notizie in tempo reale da Italia e Mondo",
+    "description": "Corriere della Sera è il primo quotidiano online aggiornato con le ultime notizie di Cronaca, Politica, Economia, Sport, Esteri, Spettacoli, Cultura e Tecnologia.",
+    "published": "",
+    "modified": "",
+    "signature": "4aa29e57972593c43df6632f2500e337a78daeb4444a1a7c12e37d23a7c2cd12",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:58.505431+00:00",
+    "content_length": 24915,
+    "url": "https://www.corriere.it/",
+    "label": "Corriere della Sera"
   },
   "https://www.timesnownews.com/": {
     "title": "Times Now: Breaking News, Latest India News, World News and Live Updates",
     "description": "News - Get all the latest news from India, US, World, Politics, Sports, Technology, Business, Lifestyle and Entertainment news on Times Now.",
     "published": "",
     "modified": "",
-    "signature": "c5c17df657e9079645c78aa9e89efe91bba12f545bff819588d3937be51ac92a",
+    "signature": "ce8b76113a028d721c4a75ec4bea9a1e2ce908b65d4ee3058f0c0b26b406c95c",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:36.016772+00:00",
-    "content_length": 9191,
+    "checked_at": "2026-10-26T17:39:58.972234+00:00",
+    "content_length": 9324,
     "url": "https://www.timesnownews.com/",
     "label": "Times Now"
+  },
+  "https://www.aninews.in/": {
+    "title": "Asia's Premier News Agency - India News, Business & Political, National & International, Bollywood, Sports | ANI News",
+    "description": "ANI brings the latest news on Politics and Current Affairs in India & around the World, Sports, Health & Fitness, Entertainment, News.",
+    "published": "",
+    "modified": "",
+    "signature": "68b539607a90288202705e62899b7b1f21cbb69df830a893364d3b149e6104c2",
+    "version": 2,
+    "checked_at": "2026-10-26T17:39:59.045581+00:00",
+    "content_length": 18468,
+    "url": "https://www.aninews.in/",
+    "label": "ANI News"
   },
   "https://www3.nhk.or.jp/nhkworld/en/news/": {
     "title": "Page Moved - Redirecting...",
@@ -457,44 +466,44 @@
     "modified": "",
     "signature": "bce42a3060afa2ef5dc18180c4aff7df6b0be16d39253cacdd7110ff24cc7ca1",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:36.210638+00:00",
+    "checked_at": "2026-10-26T17:39:59.124983+00:00",
     "content_length": 134,
     "url": "https://www3.nhk.or.jp/nhkworld/en/news/",
     "label": "NHK"
   },
-  "https://www.aninews.in/": {
-    "title": "Asia's Premier News Agency - India News, Business & Political, National & International, Bollywood, Sports | ANI News",
-    "description": "ANI brings the latest news on Politics and Current Affairs in India & around the World, Sports, Health & Fitness, Entertainment, News.",
+  "https://www.hindustantimes.com/": {
+    "title": "Hindustan Times: Breaking News, Latest News, India News, World News & Cricket Today's Headlines | Hindustan Times",
+    "description": "Hindustan Times: Stay updated with Hindustan Times for the top India news, world events, and breaking stories. Get real-time updates on politics, wars, live cricket scores, entertainment news, and lifestyle updates.",
     "published": "",
     "modified": "",
-    "signature": "ad58841e9a6090505904e3c8a57b92ee6232da9214dbdbec38e2b46142b97854",
+    "signature": "2e7f1ca0675b07b8280da52eb8fc8996ca7de9774b54b4578e300377c3658ba1",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:36.405266+00:00",
-    "content_length": 18488,
-    "url": "https://www.aninews.in/",
-    "label": "ANI News"
+    "checked_at": "2026-10-26T17:39:59.233359+00:00",
+    "content_length": 14576,
+    "url": "https://www.hindustantimes.com/",
+    "label": "Hindustan Times"
   },
-  "https://www.swissinfo.ch/eng/": {
-    "title": "Switzerland - News and perspectives",
-    "description": "SWI swissinfo.ch, your link to Switzerland. Providing independent reporting in 10 languages, focusing on democracy, foreign policy, and more.",
+  "https://english.kyodonews.net/": {
+    "title": "Japan Wire by Kyodo News",
+    "description": "Japan Wire by Kyodo News is an online publication delivering the latest news from Japan together with those stories from around the globe in which Japan plays a key role. Centering on content provided by Kyodo News, Japan’s leading news agency, our publication keeps readers abreast of the developments coming out of Japan that interest and influence, here and abroad. Start with the breaking story and then go further. Japan Wire by Kyodo News takes readers past the front page to provide a deeper look at modern Japanese culture, lifestyles, and events, in order to bring to light those stories, and those people, that shape them. Adding this content to the latest news, readers can be better informed about, and more rewardingly engaged with, Japan the country, its culture and its people.",
     "published": "",
-    "modified": "2026-10-07T09:53:10+00:00",
-    "signature": "dee5b9f5245ce2f1d9051bd8f85677d5862d6bac1f0c7bb598f18c8665c8fee6",
+    "modified": "",
+    "signature": "a9ab689b05ced50761f30f7e52ff803df79169d4623fdacb0ad6b25b1f51a7d4",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:36.669120+00:00",
-    "content_length": 54,
-    "url": "https://www.swissinfo.ch/eng/",
-    "label": "SwissInfo"
+    "checked_at": "2026-10-26T17:39:59.547219+00:00",
+    "content_length": 6351,
+    "url": "https://english.kyodonews.net/",
+    "label": "Kyodo News"
   },
   "https://asia.nikkei.com/": {
     "title": "Home",
     "description": "Japan, China, India and Southeast Asia news and expert analysis published by Nikkei, an award-winning independent provider of quality journalism.",
     "published": "",
     "modified": "",
-    "signature": "b180266895d1c269cf3ea1d95957ace468adda573339e60b14c9b88584477ad5",
+    "signature": "f9d6f6d217bd5d4c89f4bf35172818518f4c52312dd521c12232a9e61ab39d9e",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:36.842213+00:00",
-    "content_length": 9671,
+    "checked_at": "2026-10-26T17:39:59.548465+00:00",
+    "content_length": 9656,
     "url": "https://asia.nikkei.com/",
     "label": "Nikkei Asia"
   },
@@ -505,7 +514,7 @@
     "modified": "",
     "signature": "9ca6ee5ccad9fd36b627dba6be87ef2db773f83393bb30aa0f0a59737c618abe",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:37.060169+00:00",
+    "checked_at": "2026-10-26T17:39:59.960240+00:00",
     "content_length": 8749,
     "url": "https://www.channelnewsasia.com/",
     "label": "Channel News Asia"
@@ -515,24 +524,12 @@
     "description": "The Straits Times - Get latest breaking news, business, sports, lifestyle, tech & multimedia and more news in Singapore, Asia & rest of the world at straitstimes.com.",
     "published": "",
     "modified": "",
-    "signature": "09deea989d70bdf6ab63b8a9a4117cd72f29543c739c2e3f3f86eb5aaab54830",
+    "signature": "bea2798460c88ee98abba5f1ecd8d2f725da6fbb8ac2937b0720e80e43b65bae",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:37.158355+00:00",
-    "content_length": 5684,
+    "checked_at": "2026-10-26T17:40:00.051867+00:00",
+    "content_length": 5693,
     "url": "https://www.straitstimes.com/",
     "label": "Straits Times"
-  },
-  "https://www.malaymail.com/": {
-    "title": "Homepage",
-    "description": "Malay Mail, Malaymail, Malaysia, Malaysian, News, Politics, Sports, Elections, World, Business, Sports, Showbiz, Entertainment, Tech, Technology, Drive, Cars, Property, Features, Life, Opinion, Food, Columnist, Computer, Bank, Travel, Directory, Education, Eat, Drink, Dining",
-    "published": "",
-    "modified": "",
-    "signature": "2bb6aaa7809a60b51027a1bb66ea0bd7e47b4730a506524108b1251b88cdede4",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:37.309450+00:00",
-    "content_length": 8332,
-    "url": "https://www.malaymail.com/",
-    "label": "Malay Mail"
   },
   "https://en.yna.co.kr/": {
     "title": "Yonhap News Agency",
@@ -541,14 +538,10 @@
     "modified": "",
     "signature": "bb0c34f2c25354ae5b78ff162fb035beb8b0bcfbcc52e07f37db460acdd799eb",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:37.351042+00:00",
+    "checked_at": "2026-10-26T17:40:00.264733+00:00",
     "content_length": 3047,
     "url": "https://en.yna.co.kr/",
     "label": "Yonhap News"
-  },
-  "https://mb.com.ph/": {
-    "error": "403 Client Error: Forbidden for url: https://mb.com.ph/",
-    "checked_at": "2026-10-26T17:25:37.482215+00:00"
   },
   "https://www.koreaherald.com/": {
     "title": "The korea Herald",
@@ -557,142 +550,102 @@
     "modified": "",
     "signature": "1b15e3fef34d7646c3be8972e35d9887dc24a291e13780711da1291ac9768a2a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:37.594475+00:00",
+    "checked_at": "2026-10-26T17:40:00.609041+00:00",
     "content_length": 5505,
     "url": "https://www.koreaherald.com/",
     "label": "Korea Herald"
   },
-  "https://english.kyodonews.net/": {
-    "title": "Japan Wire by Kyodo News",
-    "description": "Japan Wire by Kyodo News is an online publication delivering the latest news from Japan together with those stories from around the globe in which Japan plays a key role. Centering on content provided by Kyodo News, Japan’s leading news agency, our publication keeps readers abreast of the developments coming out of Japan that interest and influence, here and abroad. Start with the breaking story and then go further. Japan Wire by Kyodo News takes readers past the front page to provide a deeper look at modern Japanese culture, lifestyles, and events, in order to bring to light those stories, and those people, that shape them. Adding this content to the latest news, readers can be better informed about, and more rewardingly engaged with, Japan the country, its culture and its people.",
+  "https://www.malaymail.com/": {
+    "title": "Homepage",
+    "description": "Malay Mail, Malaymail, Malaysia, Malaysian, News, Politics, Sports, Elections, World, Business, Sports, Showbiz, Entertainment, Tech, Technology, Drive, Cars, Property, Features, Life, Opinion, Food, Columnist, Computer, Bank, Travel, Directory, Education, Eat, Drink, Dining",
     "published": "",
     "modified": "",
-    "signature": "a9ab689b05ced50761f30f7e52ff803df79169d4623fdacb0ad6b25b1f51a7d4",
+    "signature": "b2b78ba63e669c490cb1030cb081024e1170cd739c6277638730fad18f2b0c09",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:38.121037+00:00",
-    "content_length": 6351,
-    "url": "https://english.kyodonews.net/",
-    "label": "Kyodo News"
+    "checked_at": "2026-10-26T17:40:00.680323+00:00",
+    "content_length": 8333,
+    "url": "https://www.malaymail.com/",
+    "label": "Malay Mail"
+  },
+  "https://mb.com.ph/": {
+    "error": "403 Client Error: Forbidden for url: https://mb.com.ph/",
+    "checked_at": "2026-10-26T17:25:37.482215+00:00"
   },
   "https://www.aviation24.be/": {
     "title": "Aviation24.be - Latest News & Breaking Stories - Discussion Forums",
     "description": "Aviation24.be is a Belgian website that publishes latest aviation news and breaking stories. It also hosts a popular aviation discussion forum. FKA luchtzak",
     "published": "",
     "modified": "2026-09-23T12:10:26+00:00",
-    "signature": "0127d3f1d8343960848314694f47e098b5200d53baa9aabd90b5dc6c1281d502",
+    "signature": "1d0e4f3eb6c566a05b7241246e55ddae53d0d5acd1237ff88602e0804492c27a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:38.331415+00:00",
-    "content_length": 3354,
+    "checked_at": "2026-10-26T17:40:01.012018+00:00",
+    "content_length": 3259,
     "url": "https://www.aviation24.be/",
     "label": "Aviation24.be"
-  },
-  "https://www.inquirer.net/": {
-    "title": "INQUIRER.net",
-    "description": "Coverage of breaking news and current headlines from the Philippines and around the world. Top stories, photos, videos, detailed analysis and in-depth reporting.",
-    "published": "",
-    "modified": "",
-    "signature": "d7f53dc8ccda26fbc46baa0c70a944acf809250ed17fcaae9e1bed06a0b1b59f",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:38.659455+00:00",
-    "content_length": 13600,
-    "url": "https://www.inquirer.net/",
-    "label": "Philippine Daily Inquirer"
-  },
-  "https://www.thestar.com.my/": {
-    "title": "The Star | Malaysia News: National, Regional and World News",
-    "description": "Get the latest Malaysia news stories and opinions with focus on National, Regional, Sarawak and World News, as well as reports from Parliament and Court.",
-    "published": "",
-    "modified": "",
-    "signature": "5d1f6cd932cede8bb245e07f61b511068c961133c11e5e27fbadc33d74b5656c",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:38.791375+00:00",
-    "content_length": 3584,
-    "url": "https://www.thestar.com.my/",
-    "label": "The Star"
-  },
-  "https://insiderph.com/": {
-    "title": "InsiderPH",
-    "description": "InsiderPH’s vision is to promote a Philippine society that embraces economic liberalism, open markets, and free enterprise.",
-    "published": "",
-    "modified": "",
-    "signature": "c0bd2b6a11f937f57dbcb276e839aa5e8d54848fd890a2fa9a5d447d5854c675",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:38.813606+00:00",
-    "content_length": 10699,
-    "url": "https://insiderph.com/",
-    "label": "InsiderPH"
-  },
-  "https://australianaviation.com.au/": {
-    "title": "Australian Aviation",
-    "description": "Australian Aviation is the trusted and top source of market intelligence. Delivering insights, breaking news, and information for Australia’s aviation sector.",
-    "published": "",
-    "modified": "",
-    "signature": "6fc8fd3ae27d6f880fa8b393d763dbb4decea146db8aa9fe1751edeaa36f524b",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:38.882675+00:00",
-    "content_length": 65,
-    "url": "https://australianaviation.com.au/",
-    "label": "Australian Aviation"
-  },
-  "https://www.bernama.com/en/": {
-    "title": "Malaysian National News Agency",
-    "description": "Malaysian National News Agency Your Trusted News Source, Always The First In Providing Your Trusted News Source",
-    "published": "27/10/2026 01:25:38",
-    "modified": "27/10/2026 01:25:38",
-    "signature": "a7c5825ea7a83a13a44722ebc65f1ab87b330b2ce53f417b60da728fcc49dc1c",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:38.997966+00:00",
-    "content_length": 4952,
-    "url": "https://www.bernama.com/en/",
-    "label": "Bernama"
-  },
-  "https://www.rnz.co.nz/news": {
-    "title": "RNZ",
-    "description": "Comprehensive news, culture, lifestyle, live radio and on-demand audio, podcasts and documentaries from New Zealand's only non-commercial public media.",
-    "published": "",
-    "modified": "",
-    "signature": "6c2d660edb2e5c115ced15f631dcff9c4038a47a1a090183395dd4e474acd0f8",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:39.248717+00:00",
-    "content_length": 11178,
-    "url": "https://www.rnz.co.nz/news",
-    "label": "RNZ"
-  },
-  "https://gulfnews.com/": {
-    "title": "Gulf News: Latest UAE news, Dubai news, Business, travel news, Dubai Gold rate, prayer time, cinema",
-    "description": "Get the latest update on UAE, business, life style, UAE jobs, gold rate, Exchange rate, UAE holidays, Dubai police, RTA and prayer times from UAE’s largest news portal.",
-    "published": "",
-    "modified": "",
-    "signature": "bdee850c22ede4df747491ab10cf042b9084eb7b571ea6bd7d155b666b0968cb",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:39.301968+00:00",
-    "content_length": 1876,
-    "url": "https://gulfnews.com/",
-    "label": "Gulf News"
-  },
-  "https://www.nzherald.co.nz/": {
-    "title": "NZ Herald: Breaking & Latest New Zealand News - NZ Herald",
-    "description": "Get the latest breaking news, analysis and opinion from NZ and around the world, including politics, business, sport, entertainment, travel and more.",
-    "published": "",
-    "modified": "",
-    "signature": "9c64f955723dfab7df3621958dd5c0881a657f5ad58c19133c9e8195c5d545b2",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:39.446808+00:00",
-    "content_length": 9522,
-    "url": "https://www.nzherald.co.nz/",
-    "label": "NZ Herald"
   },
   "https://www.abc.net.au/news": {
     "title": "ABC News & Headlines – Australian Broadcasting Corporation",
     "description": "Follow the latest headlines from ABC News, Australia's most trusted media source, with live events, audio and on-demand video from the national broadcaster.",
     "published": "",
     "modified": "",
-    "signature": "0f7ce449ca359f1b74724619394302a5c397ba93703ced1d55db68370e38cb57",
+    "signature": "c9c994b1fda156e3ba383684a87537428c7b5cda9079e0d51beda88dfc6d41cb",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:39.599784+00:00",
-    "content_length": 7667,
+    "checked_at": "2026-10-26T17:40:01.420222+00:00",
+    "content_length": 7661,
     "url": "https://www.abc.net.au/news",
     "label": "ABC Australia"
+  },
+  "https://enelaire.com/": {
+    "error": "HTTPSConnectionPool(host='enelaire.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='enelaire.com', port=443) at 0x7fee4cfe3230>, 'Connection to enelaire.com timed out. (connect timeout=25)'))",
+    "checked_at": "2026-10-26T17:27:20.004579+00:00"
+  },
+  "https://insiderph.com/": {
+    "title": "InsiderPH",
+    "description": "InsiderPH’s vision is to promote a Philippine society that embraces economic liberalism, open markets, and free enterprise.",
+    "published": "",
+    "modified": "",
+    "signature": "9593666ba4c8970e0829972c75c65b64f976236fca01e5676bf9ff045e27bfd6",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:01.570724+00:00",
+    "content_length": 10700,
+    "url": "https://insiderph.com/",
+    "label": "InsiderPH"
+  },
+  "https://www.bernama.com/en/": {
+    "title": "Malaysian National News Agency",
+    "description": "Malaysian National News Agency Your Trusted News Source, Always The First In Providing Your Trusted News Source",
+    "published": "27/10/2026 01:40:01",
+    "modified": "27/10/2026 01:40:01",
+    "signature": "8d380b5172c5bbef8e11f7d38148d621c9a4fc0d7b2b279c48cd4b73f548a8c5",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:01.614769+00:00",
+    "content_length": 4952,
+    "url": "https://www.bernama.com/en/",
+    "label": "Bernama"
+  },
+  "https://www.thestar.com.my/": {
+    "title": "The Star | Malaysia News: National, Regional and World News",
+    "description": "Get the latest Malaysia news stories and opinions with focus on National, Regional, Sarawak and World News, as well as reports from Parliament and Court.",
+    "published": "",
+    "modified": "",
+    "signature": "393a3ad5dd12d27ae2cd8a1ce06c4c68fd82bf7d6637e9a15d4e748d27ff907a",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:01.859837+00:00",
+    "content_length": 3562,
+    "url": "https://www.thestar.com.my/",
+    "label": "The Star"
+  },
+  "https://www.inquirer.net/": {
+    "title": "INQUIRER.net",
+    "description": "Coverage of breaking news and current headlines from the Philippines and around the world. Top stories, photos, videos, detailed analysis and in-depth reporting.",
+    "published": "",
+    "modified": "",
+    "signature": "b63424bc48420ccdc1b5446fd59b80571e01d552df8bc8206650b0b299fa60a8",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:01.956536+00:00",
+    "content_length": 13585,
+    "url": "https://www.inquirer.net/",
+    "label": "Philippine Daily Inquirer"
   },
   "https://www.chinadaily.com.cn/": {
     "title": "China Daily Website - Connecting China Connecting the World",
@@ -701,14 +654,66 @@
     "modified": "",
     "signature": "76e52d7eadf06e00db22b12008748cd4c2a92a33c60040b1a8652af35dbe771e",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:39.710434+00:00",
+    "checked_at": "2026-10-26T17:40:02.399155+00:00",
     "content_length": 7454,
     "url": "https://www.chinadaily.com.cn/",
     "label": "China Daily"
   },
+  "https://www.nzherald.co.nz/": {
+    "title": "NZ Herald: Breaking & Latest New Zealand News - NZ Herald",
+    "description": "Get the latest breaking news, analysis and opinion from NZ and around the world, including politics, business, sport, entertainment, travel and more.",
+    "published": "",
+    "modified": "",
+    "signature": "3c4e11cafa85f58efdd7858c52f0d1412d4842777b7c0222c447243dac8bd766",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:02.403906+00:00",
+    "content_length": 9616,
+    "url": "https://www.nzherald.co.nz/",
+    "label": "NZ Herald"
+  },
+  "https://www.air-journal.com/": {
+    "error": "HTTPSConnectionPool(host='www.air-journal.com', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPSConnection(host='www.air-journal.com', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))",
+    "checked_at": "2026-10-26T17:25:40.051693+00:00"
+  },
+  "https://australianaviation.com.au/": {
+    "title": "Australian Aviation",
+    "description": "Australian Aviation is the trusted and top source of market intelligence. Delivering insights, breaking news, and information for Australia’s aviation sector.",
+    "published": "",
+    "modified": "",
+    "signature": "6fc8fd3ae27d6f880fa8b393d763dbb4decea146db8aa9fe1751edeaa36f524b",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:02.772239+00:00",
+    "content_length": 65,
+    "url": "https://australianaviation.com.au/",
+    "label": "Australian Aviation"
+  },
+  "https://www.rnz.co.nz/news": {
+    "title": "RNZ",
+    "description": "Comprehensive news, culture, lifestyle, live radio and on-demand audio, podcasts and documentaries from New Zealand's only non-commercial public media.",
+    "published": "",
+    "modified": "",
+    "signature": "6b61a2c052b46503b6d24d9f4884dbb6e8c093fda46e91446a2b98f6cbe02db6",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:02.875862+00:00",
+    "content_length": 11194,
+    "url": "https://www.rnz.co.nz/news",
+    "label": "RNZ"
+  },
   "https://www.arabnews.com/": {
     "error": "403 Client Error: Forbidden for url: https://www.arabnews.com/",
     "checked_at": "2026-10-26T17:25:39.966992+00:00"
+  },
+  "https://www.aljazeera.com/": {
+    "title": "Breaking News, World News and Video from Al Jazeera",
+    "description": "News, analysis from the Middle East & worldwide, multimedia & interactives, opinions, documentaries, podcasts, long reads and broadcast schedule.",
+    "published": "",
+    "modified": "",
+    "signature": "9224b54a0ec88aaa950c65f413142fd9366fbad2a21e2a804c9ea60deff42a8a",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:03.219672+00:00",
+    "content_length": 3301,
+    "url": "https://www.aljazeera.com/",
+    "label": "Al Jazeera"
   },
   "https://www.cgtn.com/": {
     "title": "CGTN | Breaking News, China News, World News and Video",
@@ -717,22 +722,38 @@
     "modified": "",
     "signature": "235e5fd8270617622f07abc55191e87bc4655ef71a0d648df3281e422c7192b2",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:39.970702+00:00",
+    "checked_at": "2026-10-26T17:40:03.256539+00:00",
     "content_length": 11827,
     "url": "https://www.cgtn.com/",
     "label": "CGTN"
   },
-  "https://www.aljazeera.com/": {
-    "title": "Breaking News, World News and Video from Al Jazeera",
-    "description": "News, analysis from the Middle East & worldwide, multimedia & interactives, opinions, documentaries, podcasts, long reads and broadcast schedule.",
+  "https://gulfnews.com/": {
+    "title": "Gulf News: Latest UAE news, Dubai news, Business, travel news, Dubai Gold rate, prayer time, cinema",
+    "description": "Get the latest update on UAE, business, life style, UAE jobs, gold rate, Exchange rate, UAE holidays, Dubai police, RTA and prayer times from UAE’s largest news portal.",
     "published": "",
     "modified": "",
-    "signature": "a502cfd3dd7bff8354bdae5c7f8230d1628f620a37d83870cb0295aa8c34eebf",
+    "signature": "5d4783af9b994e61f295cf45e13118af45adf142f55640dc298a347f5824062e",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:40.012662+00:00",
-    "content_length": 3166,
-    "url": "https://www.aljazeera.com/",
-    "label": "Al Jazeera"
+    "checked_at": "2026-10-26T17:40:03.415881+00:00",
+    "content_length": 1871,
+    "url": "https://gulfnews.com/",
+    "label": "Gulf News"
+  },
+  "https://www.timesofisrael.com/": {
+    "error": "403 Client Error: Forbidden for url: https://www.timesofisrael.com/",
+    "checked_at": "2026-10-26T17:25:40.277006+00:00"
+  },
+  "https://www.khaleejtimes.com/": {
+    "title": "Khaleej Times - Dubai News, UAE News, Gulf, News, Latest news, Arab news, Gulf News, Dubai Labour News",
+    "description": "Khaleej Times provides the latest UAE news, Dubai headlines, world events, business updates, dubai gold prices, weather forecasts, and more.",
+    "published": "",
+    "modified": "",
+    "signature": "dd3a18b6096c430c87462f4007ae17db7c4a428315b7fb30fb2c666916f4f52c",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:03.444526+00:00",
+    "content_length": 2955,
+    "url": "https://www.khaleejtimes.com/",
+    "label": "Khaleej Times"
   },
   "https://www.gulf-times.com/": {
     "title": "Gulf Times",
@@ -741,54 +762,34 @@
     "modified": "",
     "signature": "1dea72f0eaea70c81473acca59f9139cc86b6749b06627880955930d479cb3f4",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:40.038186+00:00",
+    "checked_at": "2026-10-26T17:40:03.557554+00:00",
     "content_length": 3588,
     "url": "https://www.gulf-times.com/",
     "label": "Gulf Times"
-  },
-  "https://www.air-journal.com/": {
-    "error": "HTTPSConnectionPool(host='www.air-journal.com', port=443): Max retries exceeded with url: / (Caused by NewConnectionError(\"HTTPSConnection(host='www.air-journal.com', port=443): Failed to establish a new connection: [Errno 111] Connection refused\"))",
-    "checked_at": "2026-10-26T17:25:40.051693+00:00"
-  },
-  "https://www.khaleejtimes.com/": {
-    "title": "Khaleej Times - Dubai News, UAE News, Gulf, News, Latest news, Arab news, Gulf News, Dubai Labour News",
-    "description": "Khaleej Times provides the latest UAE news, Dubai headlines, world events, business updates, dubai gold prices, weather forecasts, and more.",
-    "published": "",
-    "modified": "",
-    "signature": "0903696a3a64fde335c6d99e21e0dd8b56abedd79408ebb1f2f1b91e6eeffd71",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:40.154925+00:00",
-    "content_length": 2908,
-    "url": "https://www.khaleejtimes.com/",
-    "label": "Khaleej Times"
-  },
-  "https://www.timesofisrael.com/": {
-    "error": "403 Client Error: Forbidden for url: https://www.timesofisrael.com/",
-    "checked_at": "2026-10-26T17:25:40.277006+00:00"
-  },
-  "https://www.thenationalnews.com/": {
-    "title": "The National - Latest world news, sport & opinion",
-    "description": "The latest international news, headlines and events from around the world",
-    "published": "",
-    "modified": "",
-    "signature": "4927fc69c04c0f2dfe91b82ce715bcb1189ea5ed548b061d508e5811f15a252c",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:40.389587+00:00",
-    "content_length": 1329,
-    "url": "https://www.thenationalnews.com/",
-    "label": "The National"
   },
   "https://saudigazette.com.sa/": {
     "title": "Home",
     "description": "Saudi Gazette – Leading coverage of Saudi Arabia, regional affairs, politics, economy, jobs, lifestyle, and breaking global news. - Home",
     "published": "",
     "modified": "",
-    "signature": "195f2375c9d2786a7897f667129692ef0cb83136ce4dd8546a92049d10d75361",
+    "signature": "cb5c3c6ee71cc271b39179b3e5917d8117e43235dfdb14621dbed7cd8dfba5a5",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:40.462380+00:00",
-    "content_length": 5747,
+    "checked_at": "2026-10-26T17:40:03.637026+00:00",
+    "content_length": 5745,
     "url": "https://saudigazette.com.sa/",
     "label": "Saudi Gazette"
+  },
+  "https://www.dailysabah.com/": {
+    "title": "Daily Sabah | Latest &amp; Breaking News from Turkey | Istanbul",
+    "description": "Latest news on politics, business, lifestyle, sports and more from Turkey and the world at DailySabah.com",
+    "published": "",
+    "modified": "",
+    "signature": "23e499e1b99ceeb97231abcc1e567ce0abdd4eedb479042e1efe9dc92161524b",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:04.133103+00:00",
+    "content_length": 8877,
+    "url": "https://www.dailysabah.com/",
+    "label": "Daily Sabah"
   },
   "https://www.aeroin.net/": {
     "title": "You are being redirected...",
@@ -797,22 +798,10 @@
     "modified": "",
     "signature": "5330fabbcb98bcea652bf728dcfc73ea5da76abd2560d680a905ba490213f8bf",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:40.564874+00:00",
+    "checked_at": "2026-10-26T17:40:04.157056+00:00",
     "content_length": 27,
     "url": "https://www.aeroin.net/",
     "label": "Aeroin"
-  },
-  "https://www.jpost.com/": {
-    "title": "The Jerusalem Post - All News from the Middle East, Israel, and the Jewish World",
-    "description": "The Jerusalem Post is Israel's most-read English news website and best-selling English newspaper bringing breaking news, world news & middle east news.",
-    "published": "",
-    "modified": "",
-    "signature": "2f893a5b71b9fe8b8821b1cb93df17dfebadb9d53bed83aa8e2c0421cdc7652a",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:40.566104+00:00",
-    "content_length": 410,
-    "url": "https://www.jpost.com/",
-    "label": "Jerusalem Post"
   },
   "https://www.hurriyetdailynews.com/": {
     "title": "Turkish News - Latest News from Turkey - Hürriyet Daily News",
@@ -821,58 +810,34 @@
     "modified": "",
     "signature": "d37706443afc3f89f2a3271d200fa29372d60349ddc8e355103687fa3d1fa962",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:40.746764+00:00",
+    "checked_at": "2026-10-26T17:40:04.427972+00:00",
     "content_length": 6666,
     "url": "https://www.hurriyetdailynews.com/",
     "label": "Hurriyet Daily News"
   },
-  "https://www.dailysabah.com/": {
-    "title": "Daily Sabah | Latest &amp; Breaking News from Turkey | Istanbul",
-    "description": "Latest news on politics, business, lifestyle, sports and more from Turkey and the world at DailySabah.com",
+  "https://www.thenationalnews.com/": {
+    "title": "The National - Latest world news, sport & opinion",
+    "description": "The latest international news, headlines and events from around the world",
     "published": "",
     "modified": "",
-    "signature": "663173e39990853af95cb38529dde5e04cc0cbb7f36fa9e1e7f164aac55fab2d",
+    "signature": "4927fc69c04c0f2dfe91b82ce715bcb1189ea5ed548b061d508e5811f15a252c",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:40.766138+00:00",
-    "content_length": 8878,
-    "url": "https://www.dailysabah.com/",
-    "label": "Daily Sabah"
+    "checked_at": "2026-10-26T17:40:04.472259+00:00",
+    "content_length": 1329,
+    "url": "https://www.thenationalnews.com/",
+    "label": "The National"
   },
-  "https://www.eltiempo.com/": {
-    "title": "Noticias Principales de Colombia y el Mundo - El Tiempo",
-    "description": "Noticias Principales de Colombia y El Mundo Últimas noticias en deportes, economía, política y tecnología Manténgase informado sobre las noticias de Colombia en EL TIEMPO COM",
+  "https://www.jpost.com/": {
+    "title": "The Jerusalem Post - All News from the Middle East, Israel, and the Jewish World",
+    "description": "The Jerusalem Post is Israel's most-read English news website and best-selling English newspaper bringing breaking news, world news & middle east news.",
     "published": "",
     "modified": "",
-    "signature": "6d766bd3290c51568443703452cbfbe1f249a53ce99934c7ac5668d357865799",
+    "signature": "2f893a5b71b9fe8b8821b1cb93df17dfebadb9d53bed83aa8e2c0421cdc7652a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:41.187816+00:00",
-    "content_length": 14551,
-    "url": "https://www.eltiempo.com/",
-    "label": "El Tiempo"
-  },
-  "https://www.clarin.com/": {
-    "title": "Noticias de Argentina",
-    "description": "Las noticias más importantes de Argentina. Leé las Noticias de Hoy en Clarín. Conocé las Últimas noticias de Argentina y del mundo, información actualizada las 24 horas y en español",
-    "published": "",
-    "modified": "",
-    "signature": "0a5f0169422bdf29f0d549c15e222f3963f419191238d9a0cd0f2f37bec7663c",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:41.290388+00:00",
-    "content_length": 14938,
-    "url": "https://www.clarin.com/",
-    "label": "Clarin"
-  },
-  "https://www.lanacion.com.ar/": {
-    "title": "Últimas noticias de Argentina y el mundo",
-    "description": "LA NACION ofrece las últimas noticias, fotos y videos de la Argentina y el mundo. Política, economía, deportes y toda la información en tiempo real.",
-    "published": "",
-    "modified": "",
-    "signature": "a777d395021f7776c549e66f7272ce0dd15d1aa1e94d3e48f9e8e66c1a5dd59e",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:41.554874+00:00",
-    "content_length": 16127,
-    "url": "https://www.lanacion.com.ar/",
-    "label": "La Nacion"
+    "checked_at": "2026-10-26T17:40:04.491659+00:00",
+    "content_length": 410,
+    "url": "https://www.jpost.com/",
+    "label": "Jerusalem Post"
   },
   "https://www.aviacionline.com/": {
     "title": "Aviacionline - El mayor servicio de noticias de aviación en idioma español.",
@@ -881,54 +846,34 @@
     "modified": "",
     "signature": "8ef572735ae87de8ae55ebda20ed3d95737f04bad5ae81ee8073a6617f618567",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:41.606205+00:00",
+    "checked_at": "2026-10-26T17:40:04.818739+00:00",
     "content_length": 45898,
     "url": "https://www.aviacionline.com/",
     "label": "Aviacionline"
   },
-  "https://www.latercera.com/": {
-    "title": "La Tercera - Noticias de Chile y el Mundo",
-    "description": "Noticias de última hora de Chile, América Latina y el mundo. Contenidos exclusivos de política, internacional, economía, opinión, cultura, espectáculos y tendencias. Novedades de la actualidad local y contenidos interactivos de La Tercera.",
+  "https://www.eltiempo.com/": {
+    "title": "Noticias Principales de Colombia y el Mundo - El Tiempo",
+    "description": "Noticias Principales de Colombia y El Mundo Últimas noticias en deportes, economía, política y tecnología Manténgase informado sobre las noticias de Colombia en EL TIEMPO COM",
     "published": "",
     "modified": "",
-    "signature": "7b1671695839d24e92547b8315944e34abd9219d439d56b27d85a73cea41e50d",
+    "signature": "ddfedf1505962a33be4f0ff6b4fce98547f15168acbb538e8feee089b8dcd3cc",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:41.742530+00:00",
-    "content_length": 15123,
-    "url": "https://www.latercera.com/",
-    "label": "La Tercera"
+    "checked_at": "2026-10-26T17:40:05.306730+00:00",
+    "content_length": 14576,
+    "url": "https://www.eltiempo.com/",
+    "label": "El Tiempo"
   },
-  "https://businesstech.co.za/news/": {
-    "error": "403 Client Error: Forbidden for url: https://businesstech.co.za/news/",
-    "checked_at": "2026-10-26T17:25:41.925921+00:00"
-  },
-  "https://g1.globo.com/": {
-    "title": "g1 - O portal de notícias da Globo",
-    "description": "Últimas notícias do Brasil e do mundo, sobre política, economia, emprego, educação, saúde, meio ambiente, tecnologia, ciência, cultura e carros. Vídeos dos telejornais da TV Globo e da GloboNews.",
-    "published": "2018-05-16T17:31:34.021Z",
-    "modified": "2026-10-26T01:24:02.597Z",
-    "signature": "2ba3a496c16540b83380153730d2157dc8b791906f905e4841ba85af0d94bd86",
-    "version": 2,
-    "checked_at": "2026-10-26T17:25:42.084634+00:00",
-    "content_length": 1627,
-    "url": "https://g1.globo.com/",
-    "label": "Globo"
-  },
-  "https://www.news24.com/": {
-    "title": "Top Stories | News24",
-    "description": "",
+  "https://www.lanacion.com.ar/": {
+    "title": "Últimas noticias de Argentina y el mundo",
+    "description": "LA NACION ofrece las últimas noticias, fotos y videos de la Argentina y el mundo. Política, economía, deportes y toda la información en tiempo real.",
     "published": "",
     "modified": "",
-    "signature": "5b6d191b9abd068cca1a7c3ccb6d14ee48acb2109fb852826348eccb6b3e338d",
+    "signature": "cd884b56abded8dbc955ea34a47064fec81cdc66cd42472ab3382f3fba2feb0a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:42.176544+00:00",
-    "content_length": 9742,
-    "url": "https://www.news24.com/",
-    "label": "News24"
-  },
-  "https://nation.africa/kenya": {
-    "error": "403 Client Error: Forbidden for url: https://nation.africa/kenya",
-    "checked_at": "2026-10-26T17:25:42.194833+00:00"
+    "checked_at": "2026-10-26T17:40:05.309335+00:00",
+    "content_length": 16332,
+    "url": "https://www.lanacion.com.ar/",
+    "label": "La Nacion"
   },
   "https://www.aviacol.net/": {
     "title": "Medio de aviación, viajes y turismo + agencia boutique | volavi",
@@ -937,65 +882,117 @@
     "modified": "",
     "signature": "9e8d987957a39e3dba1e8417291137498218b0d0dfca48e623906baa9c77f7d2",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:42.201290+00:00",
+    "checked_at": "2026-10-26T17:40:05.383166+00:00",
     "content_length": 4513,
     "url": "https://www.aviacol.net/",
     "label": "Aviacol"
   },
-  "https://addisstandard.com/": {
-    "error": "403 Client Error: Forbidden for url: https://addisstandard.com/",
-    "checked_at": "2026-10-26T17:25:42.378206+00:00"
+  "https://www.latercera.com/": {
+    "title": "La Tercera - Noticias de Chile y el Mundo",
+    "description": "Noticias de última hora de Chile, América Latina y el mundo. Contenidos exclusivos de política, internacional, economía, opinión, cultura, espectáculos y tendencias. Novedades de la actualidad local y contenidos interactivos de La Tercera.",
+    "published": "",
+    "modified": "",
+    "signature": "a19e741a7c7b936caa8e282a23103a1ff05b272737df3e7ef441eca18898c1a7",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:05.707483+00:00",
+    "content_length": 15173,
+    "url": "https://www.latercera.com/",
+    "label": "La Tercera"
+  },
+  "https://businesstech.co.za/news/": {
+    "error": "403 Client Error: Forbidden for url: https://businesstech.co.za/news/",
+    "checked_at": "2026-10-26T17:25:41.925921+00:00"
+  },
+  "https://www.news24.com/": {
+    "title": "Top Stories | News24",
+    "description": "",
+    "published": "",
+    "modified": "",
+    "signature": "66351623a420d4e3e10660cd32df35a91f5d5b4d6b754f2a201a0a6b9338ba11",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:05.963238+00:00",
+    "content_length": 9742,
+    "url": "https://www.news24.com/",
+    "label": "News24"
+  },
+  "https://nation.africa/kenya": {
+    "error": "403 Client Error: Forbidden for url: https://nation.africa/kenya",
+    "checked_at": "2026-10-26T17:25:42.194833+00:00"
   },
   "https://www.thereporterethiopia.com/": {
     "error": "403 Client Error: Forbidden for url: https://www.thereporterethiopia.com/",
     "checked_at": "2026-10-26T17:25:42.513468+00:00"
   },
-  "https://www1.folha.uol.com.br/": {
-    "title": "NotÃ­cias de hoje do Brasil e do Mundo | Folha de S.Paulo",
-    "description": "Siga a Folha e fique informado sobre tudo o que acontece no Brasil e no mundo. NotÃ­cias sobre polÃ­tica, economia, cultura, esporte, entretenimento e mais.",
-    "published": "",
-    "modified": "",
-    "signature": "9d96a8cd8fbfcfda5f2dd9176e011be1fca0ccc31d5de31ca01973414863f8fb",
+  "https://addisstandard.com/": {
+    "error": "403 Client Error: Forbidden for url: https://addisstandard.com/",
+    "checked_at": "2026-10-26T17:25:42.378206+00:00"
+  },
+  "https://g1.globo.com/": {
+    "title": "g1 - O portal de notícias da Globo",
+    "description": "Últimas notícias do Brasil e do mundo, sobre política, economia, emprego, educação, saúde, meio ambiente, tecnologia, ciência, cultura e carros. Vídeos dos telejornais da TV Globo e da GloboNews.",
+    "published": "2018-05-16T17:31:34.021Z",
+    "modified": "2026-10-26T01:24:02.597Z",
+    "signature": "bb7c2439ca7046eb0495d16c013073e6478206b0dcde59842f5df38a6b73bf0e",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:42.595949+00:00",
-    "content_length": 15683,
-    "url": "https://www1.folha.uol.com.br/",
-    "label": "Folha de Sao Paulo"
+    "checked_at": "2026-10-26T17:40:06.355239+00:00",
+    "content_length": 1618,
+    "url": "https://g1.globo.com/",
+    "label": "Globo"
   },
   "https://www.timeslive.co.za/": {
     "title": "TimesLIVE",
     "description": "Latest news from South Africa, World, Politics, Entertainment and Lifestyle. The home of The Times and Sunday Times newspaper.",
     "published": "",
     "modified": "",
-    "signature": "87116851db5ab695e27fa200f49081021d6661f8deac2841b6f2c18c69e6ede5",
+    "signature": "3251bdeeffe8e41aac451587f8f30d099869df992553c3d4fd81046b1ffd703a",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:42.658223+00:00",
-    "content_length": 3910,
+    "checked_at": "2026-10-26T17:40:06.608153+00:00",
+    "content_length": 3947,
     "url": "https://www.timeslive.co.za/",
     "label": "TimesLIVE"
+  },
+  "https://theaviationhub.com/": {
+    "error": "HTTPSConnectionPool(host='theaviationhub.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1010)')))",
+    "checked_at": "2026-10-26T17:25:57.287204+00:00"
+  },
+  "https://www1.folha.uol.com.br/": {
+    "title": "NotÃ­cias de hoje do Brasil e do Mundo | Folha de S.Paulo",
+    "description": "Siga a Folha e fique informado sobre tudo o que acontece no Brasil e no mundo. NotÃ­cias sobre polÃ­tica, economia, cultura, esporte, entretenimento e mais.",
+    "published": "",
+    "modified": "",
+    "signature": "8e1d46f4c2264d6fa090da9a6b7565ebb9fca9774ece49092a63d0af5692d1a8",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:06.858196+00:00",
+    "content_length": 15696,
+    "url": "https://www1.folha.uol.com.br/",
+    "label": "Folha de Sao Paulo"
   },
   "https://www.standardmedia.co.ke/": {
     "title": "The Standard - Kenya & World News | Latest and Breaking news",
     "description": "Uncover Kenya's boldest stories: Politics, business, sports, and more. Breaking news delivered live. Be informed, empowered.",
     "published": "",
     "modified": "",
-    "signature": "838c9c7596e7f27022b920df011a29c38650a9f67fe080c3d9b9000ef62fceff",
+    "signature": "638b3707f7ec6810b5b456520baac60953295ff006ea5cc29924c32de958d9da",
     "version": 2,
-    "checked_at": "2026-10-26T17:25:42.857205+00:00",
-    "content_length": 14297,
+    "checked_at": "2026-10-26T17:40:07.343775+00:00",
+    "content_length": 14220,
     "url": "https://www.standardmedia.co.ke/",
     "label": "The Standard"
+  },
+  "https://www.clarin.com/": {
+    "title": "Noticias de Argentina",
+    "description": "Las noticias más importantes de Argentina. Leé las Noticias de Hoy en Clarín. Conocé las Últimas noticias de Argentina y del mundo, información actualizada las 24 horas y en español",
+    "published": "",
+    "modified": "",
+    "signature": "fe4cab64cf548c108db7f95ce8f17f6fe27306332d4cc319cf381c63c63a4eea",
+    "version": 2,
+    "checked_at": "2026-10-26T17:40:07.416336+00:00",
+    "content_length": 15603,
+    "url": "https://www.clarin.com/",
+    "label": "Clarin"
   },
   "https://english.news.cn/": {
     "error": "HTTPSConnectionPool(host='english.news.cn', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1010)')))",
     "checked_at": "2026-10-26T17:25:46.405918+00:00"
-  },
-  "https://theaviationhub.com/": {
-    "error": "HTTPSConnectionPool(host='theaviationhub.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1010)')))",
-    "checked_at": "2026-10-26T17:25:57.287204+00:00"
-  },
-  "https://enelaire.com/": {
-    "error": "HTTPSConnectionPool(host='enelaire.com', port=443): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPSConnection(host='enelaire.com', port=443) at 0x7fee4cfe3230>, 'Connection to enelaire.com timed out. (connect timeout=25)'))",
-    "checked_at": "2026-10-26T17:27:20.004579+00:00"
   }
 }
