@@ -1,25 +1,37 @@
 import os
 import re
 import json
+import time
 import hashlib
 import logging
 import smtplib
 import threading
-from datetime import datetime, timezone
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import xml.etree.ElementTree as ET
+
+from datetime import datetime, timezone, timedelta
 from email.message import EmailMessage
-from urllib.parse import urlparse
+from email.utils import parsedate_to_datetime
+from urllib.parse import urljoin, urlparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 
-STATE_FILE = "state.json"
-LINKS_FILE = "links.txt"
 
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT = os.getenv("TELEGRAM_CHAT_ID")
+# ---------------- CONFIGURATION ----------------
+
+LINKS_FILE = "links.txt"
+STATE_FILE = "state.json"
+
+POLL_SECONDS = 120
+REQUEST_TIMEOUT = 15
+MAX_WORKERS = 12
+MAX_ARTICLES_PER_FEED = 100
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 SMTP_USER = os.getenv("SMTP_USER")
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
@@ -27,70 +39,124 @@ MAIL_TO = os.getenv("MAIL_TO")
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
 
-REQUEST_TIMEOUT = 25
-MAX_WORKERS = 10
-MAX_TELEGRAM_LENGTH = 4000
-SIGNATURE_VERSION = 2
-
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/128.0.0.0 Safari/537.36"
     ),
-    "Accept": (
-        "text/html,application/xhtml+xml,application/xml;"
-        "q=0.9,image/avif,image/webp,*/*;q=0.8"
-    ),
     "Accept-Language": "en-US,en;q=0.9",
-    "Cache-Control": "no-cache",
-    "Pragma": "no-cache",
 }
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
+    format="%(asctime)s %(levelname)s %(message)s",
 )
 
-_thread_local = threading.local()
+thread_local = threading.local()
 
+
+# ---------------- AIRCRAFT SAFETY FILTER ----------------
+
+AIRCRAFT_TERMS = [
+    "aircraft", "airplane", "aeroplane", "plane", "airliner",
+    "aviation", "aircraft engine", "flight crew", "pilot",
+    "airline flight", "passenger jet", "cargo aircraft",
+    "helicopter", "flight deck", "landing gear", "airbus",
+    "boeing", "embraer", "bombardier", "flight",
+]
+
+SAFETY_TERMS = [
+    "crash", "crashed", "accident", "incident",
+    "emergency landing", "forced landing", "precautionary landing",
+    "engine failure", "engine fire", "engine shutdown",
+    "in-flight shutdown", "smoke in cabin", "cabin pressure",
+    "loss of cabin pressure", "hydraulic failure",
+    "landing gear failure", "flight control failure",
+    "runway excursion", "runway overrun", "runway incursion",
+    "bird strike", "hard landing", "tail strike",
+    "mid-air collision", "near miss", "emergency declared",
+    "mayday", "distress call", "aircraft damage",
+    "structural damage", "windscreen cracked", "windshield cracked",
+    "tire burst", "tyre burst", "engine problem",
+    "technical fault", "technical failure", "mechanical failure",
+    "diverted after", "emergency diversion",
+    "airworthiness directive", "safety directive",
+    "safety warning", "safety investigation",
+    "aircraft grounded", "fleet grounded", "grounding",
+    "takeoff aborted", "rejected takeoff",
+    "loss of control", "overshot runway",
+    "flight returned", "returned to airport",
+    "emergency evacuation", "evacuated using slides",
+    "fuel leak", "oil leak", "uncontained engine failure",
+]
+
+# These phrases already strongly imply an aircraft safety event.
+SPECIFIC_SAFETY_TERMS = [
+    "emergency landing", "forced landing", "engine failure",
+    "engine fire", "in-flight shutdown", "cabin pressure",
+    "hydraulic failure", "landing gear failure",
+    "flight control failure", "runway excursion",
+    "runway overrun", "runway incursion", "bird strike",
+    "hard landing", "tail strike", "mid-air collision",
+    "airworthiness directive", "aircraft grounded",
+    "fleet grounded", "rejected takeoff", "loss of control",
+    "emergency evacuation", "uncontained engine failure",
+]
+
+
+def is_aircraft_safety_news(title, summary, url=""):
+    text = f"{title} {summary} {url}".lower()
+
+    has_safety_term = any(term in text for term in SAFETY_TERMS)
+    has_aircraft_term = any(term in text for term in AIRCRAFT_TERMS)
+    has_specific_term = any(
+        term in text for term in SPECIFIC_SAFETY_TERMS
+    )
+
+    return has_safety_term and (has_aircraft_term or has_specific_term)
+
+
+# ---------------- HTTP ----------------
 
 def get_session():
-    if not hasattr(_thread_local, "session"):
+    if not hasattr(thread_local, "session"):
         session = requests.Session()
 
         retry = Retry(
-            total=3,
-            connect=3,
+            total=2,
+            connect=2,
             read=2,
-            backoff_factor=1,
+            backoff_factor=0.5,
             status_forcelist=[429, 500, 502, 503, 504],
             allowed_methods=["GET"],
             respect_retry_after_header=True,
         )
 
-        adapter = HTTPAdapter(
-            max_retries=retry,
-            pool_connections=20,
-            pool_maxsize=20,
-        )
-
+        adapter = HTTPAdapter(max_retries=retry)
         session.mount("http://", adapter)
         session.mount("https://", adapter)
         session.headers.update(HEADERS)
 
-        _thread_local.session = session
+        thread_local.session = session
 
-    return _thread_local.session
+    return thread_local.session
 
 
-def load_links():
-    if not os.path.exists(LINKS_FILE):
-        logging.error("%s was not found.", LINKS_FILE)
-        return []
+def fetch(url):
+    response = get_session().get(
+        url,
+        timeout=REQUEST_TIMEOUT,
+        allow_redirects=True,
+    )
+    response.raise_for_status()
+    return response
 
-    links = []
-    seen = set()
+
+# ---------------- INPUT AND STATE ----------------
+
+def load_sources():
+    sources = []
 
     with open(LINKS_FILE, "r", encoding="utf-8-sig") as file:
         for line in file:
@@ -104,341 +170,351 @@ def load_links():
                 label = label.strip()
                 url = url.strip()
             else:
-                label = ""
                 url = line
+                label = urlparse(url).netloc
 
-            if not url.startswith(("http://", "https://")):
-                logging.warning("Skipping invalid URL: %s", url)
-                continue
-
-            if url not in seen:
-                links.append({
-                    "url": url,
+            if url.startswith(("http://", "https://")):
+                sources.append({
                     "label": label or urlparse(url).netloc,
+                    "url": url,
                 })
-                seen.add(url)
 
-    return links
+    return sources
 
 
 def load_state():
     if not os.path.exists(STATE_FILE):
-        return {}
+        return {
+            "seen_articles": {},
+            "feeds": {},
+            "initialized": False,
+        }
 
     try:
         with open(STATE_FILE, "r", encoding="utf-8") as file:
-            data = json.load(file)
+            state = json.load(file)
 
-        return data if isinstance(data, dict) else {}
+        # Migrate the older monitor's state format.
+        if "seen_articles" not in state:
+            state = {
+                "seen_articles": {},
+                "feeds": {},
+                "initialized": False,
+            }
 
-    except (json.JSONDecodeError, OSError) as error:
-        logging.warning("Could not read state file: %s", error)
-        return {}
+        state.setdefault("seen_articles", {})
+        state.setdefault("feeds", {})
+        state.setdefault("initialized", False)
+
+        return state
+
+    except (OSError, json.JSONDecodeError):
+        logging.warning("Could not load state; creating a new state.")
+        return {
+            "seen_articles": {},
+            "feeds": {},
+            "initialized": False,
+        }
 
 
 def save_state(state):
-    temporary_file = STATE_FILE + ".tmp"
+    temp = STATE_FILE + ".tmp"
 
-    with open(temporary_file, "w", encoding="utf-8") as file:
+    with open(temp, "w", encoding="utf-8") as file:
         json.dump(state, file, indent=2, ensure_ascii=False)
 
-    os.replace(temporary_file, STATE_FILE)
+    os.replace(temp, STATE_FILE)
 
 
-def normalize_text(value):
-    if not value:
-        return ""
+# ---------------- FEED DISCOVERY ----------------
 
-    return re.sub(r"\s+", " ", str(value)).strip()
+def local_name(tag):
+    return tag.rsplit("}", 1)[-1].lower()
 
 
-def get_meta_content(soup, *selectors):
-    for selector in selectors:
-        element = soup.select_one(selector)
+def is_feed_xml(content):
+    try:
+        root = ET.fromstring(content)
+        names = {local_name(node.tag) for node in root.iter()}
 
-        if element:
-            content = (
-                element.get("content")
-                or element.get("datetime")
-                or element.get_text(" ", strip=True)
-            )
+        return bool(
+            names.intersection({"rss", "feed", "rdf", "item", "entry"})
+        )
+    except ET.ParseError:
+        return False
 
-            if content:
-                return normalize_text(content)
+
+def discover_feed(homepage):
+    """Try published RSS/Atom links and common feed paths."""
+    candidates = []
+
+    try:
+        response = fetch(homepage)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        for element in soup.find_all("link", href=True):
+            rel = element.get("rel", [])
+            rel = [str(value).lower() for value in rel]
+
+            feed_type = element.get("type", "").lower()
+
+            if "alternate" in rel and (
+                "rss" in feed_type
+                or "atom" in feed_type
+                or "xml" in feed_type
+            ):
+                candidates.append(urljoin(response.url, element["href"]))
+
+    except Exception as error:
+        logging.warning("Homepage unavailable: %s (%s)", homepage, error)
+
+    base = homepage.rstrip("/")
+
+    candidates.extend([
+        base + "/feed",
+        base + "/feed/",
+        base + "/rss",
+        base + "/rss/",
+        base + "/rss.xml",
+        base + "/feed.xml",
+        base + "/news/rss",
+        base + "/news/feed/",
+    ])
+
+    checked = set()
+
+    for candidate in candidates:
+        if candidate in checked:
+            continue
+
+        checked.add(candidate)
+
+        try:
+            response = fetch(candidate)
+
+            if is_feed_xml(response.content):
+                logging.info("Feed found: %s", candidate)
+                return response.url
+
+        except Exception:
+            continue
+
+    return None
+
+
+# ---------------- FEED READING ----------------
+
+def child_text(element, names):
+    for child in element.iter():
+        if local_name(child.tag) in names:
+            text = "".join(child.itertext()).strip()
+
+            if text:
+                return text
 
     return ""
 
 
-def extract_jsonld_metadata(soup):
-    metadata = []
-    scripts = soup.find_all(
-        "script",
-        attrs={"type": re.compile(r"application/ld\+json", re.I)},
-    )
+def entry_link(entry):
+    # RSS link
+    for child in list(entry):
+        if local_name(child.tag) == "link":
+            href = child.attrib.get("href")
 
-    for script in scripts:
-        raw = script.string or script.get_text()
+            if href:
+                if child.attrib.get("rel", "alternate") == "alternate":
+                    return href
 
-        if not raw:
-            continue
+            text = "".join(child.itertext()).strip()
 
-        try:
-            data = json.loads(raw)
-        except (json.JSONDecodeError, TypeError):
-            continue
+            if text.startswith(("http://", "https://")):
+                return text
 
-        objects = data if isinstance(data, list) else [data]
-        index = 0
+    # Atom ID may be a URL.
+    for child in list(entry):
+        if local_name(child.tag) == "id":
+            value = "".join(child.itertext()).strip()
 
-        while index < len(objects):
-            obj = objects[index]
-            index += 1
+            if value.startswith(("http://", "https://")):
+                return value
 
-            if not isinstance(obj, dict):
-                continue
-
-            graph = obj.get("@graph")
-            if isinstance(graph, list):
-                objects.extend(
-                    item for item in graph
-                    if isinstance(item, dict)
-                )
-
-            article_type = obj.get("@type", "")
-            if isinstance(article_type, list):
-                article_type = " ".join(article_type)
-
-            if any(
-                word in str(article_type).lower()
-                for word in ("article", "news", "blogposting")
-            ):
-                for key in (
-                    "headline",
-                    "datePublished",
-                    "dateModified",
-                    "description",
-                ):
-                    value = obj.get(key)
-
-                    if isinstance(value, str) and value.strip():
-                        metadata.append(
-                            f"{key}: {normalize_text(value)}"
-                        )
-
-    return metadata
+    return ""
 
 
-def extract_page_content(html, url):
-    soup = BeautifulSoup(html, "html.parser")
+def parse_feed(feed_url, source):
+    response = fetch(feed_url)
+    root = ET.fromstring(response.content)
 
-    title = (
-        get_meta_content(soup, 'meta[property="og:title"]')
-        or get_meta_content(soup, 'meta[name="twitter:title"]')
-        or normalize_text(
-            soup.title.get_text(" ", strip=True)
-            if soup.title else ""
-        )
-    )
-
-    metadata = {
-        "title": title,
-        "description": get_meta_content(
-            soup,
-            'meta[name="description"]',
-            'meta[property="og:description"]',
-            'meta[name="twitter:description"]',
-        ),
-        "published": get_meta_content(
-            soup,
-            'meta[property="article:published_time"]',
-            'meta[name="date"]',
-            'meta[name="publish-date"]',
-            'meta[itemprop="datePublished"]',
-        ),
-        "modified": get_meta_content(
-            soup,
-            'meta[property="article:modified_time"]',
-            'meta[name="last-modified"]',
-            'meta[itemprop="dateModified"]',
-        ),
-    }
-
-    jsonld = extract_jsonld_metadata(soup)
-
-    for element in soup.find_all([
-        "script", "style", "noscript", "svg", "iframe",
-        "nav", "footer", "header", "aside", "form",
-        "button", "input", "select", "textarea",
-    ]):
-        element.decompose()
-
-    for element in soup.find_all(
-        attrs={
-            "class": re.compile(
-                r"advert|advertisement|cookie|popup|modal|"
-                r"social-share|related-post|comment|sidebar",
-                re.I,
-            )
-        }
-    ):
-        element.decompose()
-
-    selectors = [
-        "article",
-        '[itemprop="articleBody"]',
-        '[class*="article-body"]',
-        '[class*="article-content"]',
-        '[class*="story-body"]',
-        '[class*="story-content"]',
-        '[class*="post-content"]',
-        '[class*="entry-content"]',
-        '[id*="article-body"]',
-        '[id*="article-content"]',
-        "main",
-        '[role="main"]',
+    entries = [
+        node for node in root.iter()
+        if local_name(node.tag) in ("item", "entry")
     ]
 
-    content = ""
+    articles = []
 
-    for selector in selectors:
-        elements = soup.select(selector)
+    for entry in entries[:MAX_ARTICLES_PER_FEED]:
+        title = child_text(entry, {"title"})
+        link = entry_link(entry)
 
-        if elements:
-            candidate = normalize_text(
-                " ".join(
-                    element.get_text(" ", strip=True)
-                    for element in elements
-                )
-            )
+        if not link:
+            continue
 
-            if len(candidate) > len(content):
-                content = candidate
+        link = urljoin(feed_url, link)
 
-            if len(content) >= 200:
-                break
+        summary = child_text(
+            entry,
+            {"description", "summary", "encoded", "content"},
+        )
 
-    if len(content) < 100:
-        body = soup.body or soup
-        content = normalize_text(body.get_text(" ", strip=True))
+        summary = BeautifulSoup(
+            summary, "html.parser"
+        ).get_text(" ", strip=True)
 
-    combined_metadata = "\n".join(
-        f"{key}: {value}"
-        for key, value in metadata.items()
-        if value
-    )
+        published = child_text(
+            entry,
+            {"pubdate", "published", "updated", "date", "modified"},
+        )
 
-    combined = "\n".join(
-        part for part in [
-            url,
-            combined_metadata,
-            "\n".join(jsonld),
-            content,
-        ]
-        if part
-    )
+        if not title:
+            continue
 
-    combined = re.sub(
-        r"\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}"
-        r"(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?\b",
-        "",
-        combined,
-    )
+        articles.append({
+            "source": source["label"],
+            "title": title.strip(),
+            "url": link,
+            "summary": summary[:3000],
+            "published": published,
+        })
 
-    signature = hashlib.sha256(
-        combined.encode("utf-8", errors="ignore")
-    ).hexdigest()
-
-    return {
-        "title": title or url,
-        "description": metadata["description"],
-        "published": metadata["published"],
-        "modified": metadata["modified"],
-        "signature": signature,
-        "version": SIGNATURE_VERSION,
-        "checked_at": datetime.now(timezone.utc).isoformat(),
-        "content_length": len(content),
-    }
+    return articles
 
 
-def check_link(link):
-    url = link["url"]
+# ---------------- PAGE FALLBACK ----------------
+
+def scrape_page_links(source):
+    """Fallback for pages without a usable RSS/Atom feed."""
+    response = fetch(source["url"])
+    soup = BeautifulSoup(response.text, "html.parser")
+    articles = []
+
+    for anchor in soup.find_all("a", href=True):
+        title = anchor.get_text(" ", strip=True)
+
+        if len(title) < 15:
+            continue
+
+        link = urljoin(response.url, anchor["href"])
+
+        if urlparse(link).scheme not in ("http", "https"):
+            continue
+
+        if not is_aircraft_safety_news(title, "", link):
+            continue
+
+        articles.append({
+            "source": source["label"],
+            "title": title,
+            "url": link,
+            "summary": "",
+            "published": "",
+        })
+
+    return articles
+
+
+def check_source(source, cached_feed):
+    feed_url = cached_feed
 
     try:
-        response = get_session().get(
-            url,
-            timeout=REQUEST_TIMEOUT,
-            allow_redirects=True,
-        )
-        response.raise_for_status()
+        if feed_url:
+            try:
+                articles = parse_feed(feed_url, source)
+                return source["url"], feed_url, articles, None
+            except Exception as error:
+                logging.warning(
+                    "Cached feed failed for %s: %s",
+                    source["label"], error
+                )
 
-        content_type = response.headers.get("Content-Type", "").lower()
+        feed_url = discover_feed(source["url"])
 
-        if "html" not in content_type and "xml" not in content_type:
-            raise ValueError(
-                f"Unsupported content type: "
-                f"{content_type or 'unknown'}"
-            )
+        if feed_url:
+            articles = parse_feed(feed_url, source)
+            return source["url"], feed_url, articles, None
 
-        result = extract_page_content(response.text, url)
-        result["url"] = url
-        result["label"] = link["label"]
-
-        logging.info("Checked: %s", url)
-        return result
+        articles = scrape_page_links(source)
+        return source["url"], "", articles, None
 
     except Exception as error:
-        logging.warning("Failed to check %s: %s", url, error)
+        return source["url"], feed_url or "", [], str(error)
 
-        return {
-            "url": url,
-            "label": link["label"],
-            "error": str(error),
-            "checked_at": datetime.now(timezone.utc).isoformat(),
-        }
 
+# ---------------- PUBLICATION DATE ----------------
+
+def parse_publication_date(value):
+    if not value:
+        return None
+
+    try:
+        result = parsedate_to_datetime(value)
+
+        if result.tzinfo is None:
+            result = result.replace(tzinfo=timezone.utc)
+
+        return result.astimezone(timezone.utc)
+
+    except (TypeError, ValueError, OverflowError):
+        pass
+
+    try:
+        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+        if result.tzinfo is None:
+            result = result.replace(tzinfo=timezone.utc)
+
+        return result.astimezone(timezone.utc)
+
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def article_id(article):
+    canonical = article["url"].split("#", 1)[0].rstrip("/")
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+# ---------------- ALERTS ----------------
 
 def send_telegram(message):
-    if not TOKEN or not CHAT:
-        logging.warning(
-            "Telegram is not configured. Check GitHub repository secrets."
-        )
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        logging.error("Telegram secrets are missing.")
         return False
 
-    api_url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    url = (
+        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    )
 
-    chunks = [
-        message[i:i + MAX_TELEGRAM_LENGTH]
-        for i in range(0, len(message), MAX_TELEGRAM_LENGTH)
-    ]
+    try:
+        response = requests.post(
+            url,
+            json={
+                "chat_id": TELEGRAM_CHAT_ID,
+                "text": message[:4000],
+                "disable_web_page_preview": True,
+            },
+            timeout=20,
+        )
+        response.raise_for_status()
+        return response.json().get("ok", False)
 
-    success = True
-
-    for chunk in chunks:
-        try:
-            response = requests.post(
-                api_url,
-                json={
-                    "chat_id": CHAT,
-                    "text": chunk,
-                    "disable_web_page_preview": True,
-                },
-                timeout=20,
-            )
-            response.raise_for_status()
-
-            if not response.json().get("ok", False):
-                logging.error("Telegram API returned an unsuccessful response.")
-                success = False
-
-        except Exception as error:
-            logging.error("Telegram notification failed: %s", error)
-            success = False
-
-    return success
+    except Exception as error:
+        logging.error("Telegram send failed: %s", error)
+        return False
 
 
 def send_email(subject, body):
     if not all([SMTP_USER, SMTP_PASSWORD, MAIL_TO]):
+        logging.error("Email secrets are missing.")
         return False
 
     message = EmailMessage()
@@ -448,126 +524,155 @@ def send_email(subject, body):
     message.set_content(body)
 
     try:
-        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=20) as server:
+        with smtplib.SMTP_SSL(
+            SMTP_HOST, SMTP_PORT, timeout=20
+        ) as server:
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.send_message(message)
 
         return True
 
     except Exception as error:
-        logging.error("Email notification failed: %s", error)
+        logging.error("Email send failed: %s", error)
         return False
 
 
-def format_change_message(changes):
-    lines = ["🔔 ARTICLE UPDATE DETECTED", ""]
+def notify(article):
+    published = article.get("published") or "Not provided by source"
 
-    for item in changes:
-        lines.extend([
-            f"📰 {item.get('label') or item['url']}",
-            f"Title: {item.get('title', 'Unknown')}",
-            f"Link: {item['url']}",
-        ])
-
-        if item.get("description"):
-            lines.append(
-                f"Description: {item['description'][:300]}"
-            )
-
-        if item.get("modified"):
-            lines.append(f"Modified: {item['modified']}")
-
-        lines.append("")
-
-    lines.append(
-        "The monitored page content or article metadata has changed."
+    message = (
+        "🚨 AIRCRAFT SAFETY NEWS\n\n"
+        f"Source: {article['source']}\n"
+        f"Headline: {article['title']}\n"
+        f"Published: {published}\n\n"
+        f"Summary: {article.get('summary', '')[:1000]}\n\n"
+        f"Article: {article['url']}\n\n"
+        "Please verify the report with the original source."
     )
 
-    return "\n".join(lines)
+    telegram_ok = send_telegram(message)
+
+    email_ok = send_email(
+        f"AIRCRAFT SAFETY ALERT: {article['title'][:150]}",
+        message,
+    )
+
+    logging.info(
+        "Alert result: Telegram=%s Email=%s",
+        telegram_ok, email_ok
+    )
 
 
-def main():
-    links = load_links()
+# ---------------- CONTINUOUS MONITOR ----------------
 
-    if not links:
-        logging.warning("No valid URLs found in links.txt.")
+def run_cycle(state):
+    sources = load_sources()
+
+    if not sources:
+        logging.error("No valid sources in links.txt.")
         return
 
-    state = load_state()
-    new_state = {}
-    changes = []
-    failures = []
+    logging.info("Checking %d sources.", len(sources))
 
-    logging.info("Starting monitoring for %d URLs.", len(links))
+    results = []
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = {
-            executor.submit(check_link, link): link
-            for link in links
+            executor.submit(
+                check_source,
+                source,
+                state["feeds"].get(source["url"]),
+            ): source
+            for source in sources
         }
 
         for future in as_completed(futures):
-            result = future.result()
-            url = result["url"]
-            previous = state.get(url, {})
+            try:
+                results.append(future.result())
+            except Exception as error:
+                logging.error("Source worker failed: %s", error)
 
-            if result.get("error"):
-                failures.append(result)
-                new_state[url] = previous or {
-                    "error": result["error"],
-                    "checked_at": result["checked_at"],
-                }
+    now = datetime.now(timezone.utc)
+    initial_run = not state.get("initialized", False)
+    seen = state["seen_articles"]
+    new_alerts = []
+
+    for source_url, feed_url, articles, error in results:
+        if feed_url:
+            state["feeds"][source_url] = feed_url
+
+        if error:
+            logging.warning(
+                "Source failed: %s — %s", source_url, error
+            )
+            continue
+
+        for article in articles:
+            if not is_aircraft_safety_news(
+                article["title"],
+                article.get("summary", ""),
+                article["url"],
+            ):
                 continue
 
-            old_signature = previous.get("signature")
-            new_signature = result["signature"]
+            key = article_id(article)
 
-            if not previous:
-                logging.info("Baseline created: %s", url)
+            if key in seen:
+                continue
 
-            elif (
-                old_signature
-                and previous.get("version") != SIGNATURE_VERSION
-            ):
-                logging.info("Baseline refreshed: %s", url)
+            # On the first launch, alert only for matching stories
+            # published in the last 30 minutes. Older items become
+            # the baseline, avoiding a large historical alert burst.
+            if initial_run:
+                published = parse_publication_date(
+                    article.get("published", "")
+                )
 
-            elif old_signature and old_signature != new_signature:
-                logging.info("CHANGE DETECTED: %s", url)
-                changes.append(result)
+                if published is None or now - timedelta(minutes=30) > published:
+                    seen[key] = now.isoformat()
+                    continue
 
-            new_state[url] = result
+            seen[key] = now.isoformat()
+            new_alerts.append(article)
 
-    save_state(new_state)
+    state["initialized"] = True
 
-    if changes:
-        message = format_change_message(changes)
-        send_telegram(message)
-        send_email("Article Update Detected", message)
+    # Keep state bounded.
+    if len(seen) > 20000:
+        newest = sorted(
+            seen.items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )[:15000]
+        state["seen_articles"] = dict(newest)
 
-    if failures and TOKEN and CHAT:
-        failure_lines = [
-            "⚠️ SOME MONITORED PAGES COULD NOT BE CHECKED",
-            "",
-        ]
+    save_state(state)
 
-        for item in failures[:15]:
-            failure_lines.append(
-                f"{item['url']}\nError: {item['error'][:250]}\n"
-            )
-
-        if len(failures) > 15:
-            failure_lines.append(
-                f"...and {len(failures) - 15} additional failures."
-            )
-
-        send_telegram("\n".join(failure_lines))
+    for article in new_alerts:
+        notify(article)
 
     logging.info(
-        "Monitoring complete. Checked: %d | Changes: %d | Failures: %d",
-        len(links),
-        len(changes),
-        len(failures),
+        "Cycle complete. New aircraft safety alerts: %d",
+        len(new_alerts),
     )
+
+
+def main():
+    logging.info("Aircraft safety monitor starting.")
+    logging.info("Polling interval: %d seconds", POLL_SECONDS)
+
+    state = load_state()
+
+    while True:
+        started = time.monotonic()
+
+        try:
+            run_cycle(state)
+        except Exception:
+            logging.exception("Monitoring cycle failed.")
+
+        elapsed = time.monotonic() - started
+        time.sleep(max(5, POLL_SECONDS - elapsed))
 
 
 if __name__ == "__main__":
