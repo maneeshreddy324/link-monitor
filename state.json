@@ -8,12 +8,12 @@
   "err": "403 Client Error: Forbidden for url: https://aerocorner.com/"
  },
  "https://www.airwaysmag.com/": {
-  "sig": "c0599398e86d393249279599f0e66d51cecadfb50e867bb21d3e1546e32bf7b2",
+  "sig": "2152c2eda9a4b78a52498b456c87d80aa6d6a367a2cce21c936ad97af5cbdf03",
   "title": "Airways | Home",
   "err": null
  },
  "https://www.flyingmag.com/": {
-  "sig": "ca7ee3d38e6649cf32fe8b8aa6aabe7d176be0ac5767b9a8e1d8f9d29537b03d",
+  "sig": "8f4d79278a19bfd3de7d0685f7556bd440982bd29a86bf90ba1eb04d3749c735",
   "title": "Aviation Stories, Aircraft Reviews, & Pilot Resources",
   "err": null
  }
