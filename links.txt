@@ -1,4 +1,98 @@
-https://aviationweek.com/
-https://aerocorner.com/
-https://www.airwaysmag.com/
-https://www.flyingmag.com/
+Aviation Week | https://aviationweek.com/
+AeroCorner | https://aerocorner.com/
+Airways Magazine | https://airwaysmag.com/
+Flying Magazine | https://www.flyingmag.com/
+CNN | https://edition.cnn.com/
+NBC News | https://www.nbcnews.com/
+ABC News | https://abcnews.go.com/
+CBS News | https://www.cbsnews.com/
+FlightAware | https://www.flightaware.com/news/
+FAA News | https://www.faa.gov/newsroom
+Skies Magazine | https://skiesmag.com/
+Wings Magazine | https://wingsmagazine.com/
+CBC News | https://www.cbc.ca/news
+CTV News | https://www.ctvnews.ca/
+Global News | https://globalnews.ca/
+EnElAire | https://enelaire.com/
+El Universal | https://www.eluniversal.com.mx/
+Milenio | https://www.milenio.com/
+Simple Flying | https://simpleflying.com/
+FlightGlobal | https://www.flightglobal.com/
+The Aviation Hub | https://theaviationhub.com/
+Airliner World | https://www.airlinerworld.com/
+BBC News | https://www.bbc.com/news
+Aviation Herald | https://avherald.com/
+AeroInside | https://www.aeroinside.com/
+Deutsche Welle | https://www.dw.com/en/
+Aviation Safety Network | https://aviation-safety.net/
+DutchNews | https://www.dutchnews.nl/
+Aviation24.be | https://www.aviation24.be/
+Brussels Times | https://www.brusselstimes.com/
+ch-aviation | https://www.ch-aviation.com/
+SwissInfo | https://www.swissinfo.ch/eng/
+Air Journal | https://www.air-journal.com/
+Le Monde | https://www.lemonde.fr/en/
+France24 | https://www.france24.com/en/
+Preferente | https://www.preferente.com/
+Aviacion Digital | https://www.aviaciondigital.com/
+El Pais | https://elpais.com/
+Clare Herald | https://www.clareherald.com/
+Irish Times | https://www.irishtimes.com/
+ANSA | https://www.ansa.it/english/
+Corriere della Sera | https://www.corriere.it/
+Times of India | https://timesofindia.indiatimes.com/
+Indian Express | https://indianexpress.com/
+New Indian Express | https://www.newindianexpress.com/
+ANI News | https://www.aninews.in/
+NDTV | https://www.ndtv.com/
+NDTV Profit | https://www.ndtvprofit.com/
+Hindustan Times | https://www.hindustantimes.com/
+Times Now | https://www.timesnownews.com/
+India TV | https://www.indiatvnews.com/
+NHK | https://www3.nhk.or.jp/nhkworld/en/news/
+Kyodo News | https://english.kyodonews.net/
+Nikkei Asia | https://asia.nikkei.com/
+Yonhap News | https://en.yna.co.kr/
+Korea Herald | https://www.koreaherald.com/
+Channel News Asia | https://www.channelnewsasia.com/
+Straits Times | https://www.straitstimes.com/
+Malay Mail | https://www.malaymail.com/
+Bernama | https://www.bernama.com/en/
+The Star | https://www.thestar.com.my/
+InsiderPH | https://insiderph.com/
+Manila Bulletin | https://mb.com.ph/
+Philippine Daily Inquirer | https://www.inquirer.net/
+Australian Aviation | https://australianaviation.com.au/
+ABC Australia | https://www.abc.net.au/news
+NZ Herald | https://www.nzherald.co.nz/
+RNZ | https://www.rnz.co.nz/news
+Xinhua | https://english.news.cn/
+China Daily | https://www.chinadaily.com.cn/
+CGTN | https://www.cgtn.com/
+Gulf News | https://gulfnews.com/
+Khaleej Times | https://www.khaleejtimes.com/
+The National | https://www.thenationalnews.com/
+Al Jazeera | https://www.aljazeera.com/
+Gulf Times | https://www.gulf-times.com/
+Arab News | https://www.arabnews.com/
+Saudi Gazette | https://saudigazette.com.sa/
+Jerusalem Post | https://www.jpost.com/
+Times of Israel | https://www.timesofisrael.com/
+Daily Sabah | https://www.dailysabah.com/
+Hurriyet Daily News | https://www.hurriyetdailynews.com/
+Aeroin | https://www.aeroin.net/
+Folha de Sao Paulo | https://www1.folha.uol.com.br/
+Globo | https://g1.globo.com/
+Aviacionline | https://www.aviacionline.com/
+La Nacion | https://www.lanacion.com.ar/
+Clarin | https://www.clarin.com/
+La Tercera | https://www.latercera.com/
+El Tiempo | https://www.eltiempo.com/
+Aviacol | https://www.aviacol.net/
+News24 | https://www.news24.com/
+TimesLIVE | https://www.timeslive.co.za/
+BusinessTech | https://businesstech.co.za/news/
+Daily Nation | https://nation.africa/kenya
+The Standard | https://www.standardmedia.co.ke/
+Ethiopian Reporter | https://www.thereporterethiopia.com/
+Addis Standard | https://addisstandard.com/
