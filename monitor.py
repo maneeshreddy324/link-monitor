@@ -1,75 +1,128 @@
-import os, re, json, hashlib, smtplib, ssl
+import os, json
 from concurrent.futures import ThreadPoolExecutor
-from email.mime.text import MIMEText
+from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-UA = {"User-Agent": "Mozilla/5.0 (compatible; LinkMonitor/1.0)"}
-STATE = "state.json"
+STATE_FILE = "state.json"
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT = os.getenv("TELEGRAM_CHAT_ID")
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
 
 def load_links():
-    out = []
-    for line in open("links.txt", encoding="utf-8"):
-        line = line.strip()
-        if line and not line.startswith("#") and line not in out:
-            out.append(line)
-    return out
+    links = []
+    with open("links.txt", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "|" in line:
+                name, url = [p.strip() for p in line.split("|", 1)]
+            else:
+                name, url = urlparse(line).netloc, line
+            if url.startswith("http"):
+                links.append((name, url))
+    return links
 
-def fetch(url):
+
+def telegram(text):
+    if not (TOKEN and CHAT):
+        print("Telegram secrets missing")
+        return
     try:
-        r = requests.get(url, headers=UA, timeout=25)
-        r.raise_for_status()
-        soup = BeautifulSoup(r.text, "html.parser")
-        title = (soup.title.string or "").strip() if soup.title else ""
-        for t in soup(["script", "style", "noscript", "nav", "footer", "header", "aside", "iframe", "form"]):
-            t.decompose()
-        root = soup.find("article") or soup.find("main") or soup.body or soup
-        text = re.sub(r"\s+", " ", root.get_text(" ")).strip()
-        if len(text) < 50:
-            raise ValueError("no readable content (login/blocked page)")
-        sig = hashlib.sha256((title + "|" + text).encode()).hexdigest()
-        return url, {"sig": sig, "title": title, "err": None}
+        r = requests.post(
+            f"https://api.telegram.org/bot{TOKEN}/sendMessage",
+            data={"chat_id": CHAT, "text": text[:4000],
+                  "disable_web_page_preview": True},
+            timeout=20,
+        )
+        if not r.ok:
+            print("Telegram error", r.status_code, r.text[:200])
     except Exception as e:
-        return url, {"err": str(e)[:150]}
+        print("Telegram exception", e)
 
-def send_telegram(msg):
-    tok, chat = os.getenv("TELEGRAM_BOT_TOKEN"), os.getenv("TELEGRAM_CHAT_ID")
-    if tok and chat:
-        for i in range(0, len(msg), 3800):
-            requests.post(f"https://api.telegram.org/bot{tok}/sendMessage",
-                          data={"chat_id": chat, "text": msg[i:i+3800], "disable_web_page_preview": "true"}, timeout=20)
 
-def send_email(subject, msg):
-    user, pw, to = os.getenv("SMTP_USER"), os.getenv("SMTP_PASSWORD"), os.getenv("MAIL_TO")
-    if user and pw and to:
-        m = MIMEText(msg)
-        m["Subject"], m["From"], m["To"] = subject, user, to
-        with smtplib.SMTP_SSL(os.getenv("SMTP_HOST", "smtp.gmail.com"), 465, context=ssl.create_default_context()) as s:
-            s.login(user, pw)
-            s.sendmail(user, [x.strip() for x in to.split(",")], m.as_string())
+def check(item):
+    name, url = item
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=20)
+        if r.status_code != 200:
+            return name, url, None, f"HTTP {r.status_code}"
+        soup = BeautifulSoup(r.text, "html.parser")
+        host = urlparse(r.url).netloc.replace("www.", "")
+        found = {}
+        for a in soup.find_all("a", href=True):
+            title = " ".join(a.get_text(" ", strip=True).split())
+            if len(title) < 25:
+                continue
+            full = urljoin(r.url, a["href"]).split("#")[0]
+            p = urlparse(full)
+            if host not in p.netloc or len(p.path) < 10:
+                continue
+            found.setdefault(full, title)
+            if len(found) >= 80:
+                break
+        if not found:
+            return name, url, None, "no articles found"
+        return name, url, found, None
+    except Exception as e:
+        return name, url, None, type(e).__name__
+
 
 def main():
-    links = load_links()
-    state = json.load(open(STATE)) if os.path.exists(STATE) else {}
-    with ThreadPoolExecutor(15) as ex:
-        results = list(ex.map(fetch, links))
-    changed, failed = [], 0
-    for url, res in results:
-        old = state.get(url, {})
-        if res["err"]:
-            failed += 1
-            old["err"] = res["err"]
-            state[url] = old
-            continue
-        if old.get("sig") and old["sig"] != res["sig"]:
-            changed.append((url, res["title"] or url))
-        state[url] = res
-    state = {u: v for u, v in state.items() if u in links}
-    json.dump(state, open(STATE, "w"), indent=1)
-    print(f"Checked {len(links)} links, {len(changed)} changed, {failed} unreadable")
-    if changed:
-        body = "New update detected on:\n\n" + "\n\n".join(f"{t}\n{u}" for u, t in changed)
-        send_telegram("\U0001F6A8 " + body)
-        send_email(f"Update alert: {len(changed)} link(s) changed", body)
+    try:
+        with open(STATE_FILE) as f:
+            state = json.load(f)
+        if not isinstance(state, dict):
+            state = {}
+    except Exception:
+        state = {}
 
-main()
+    links = load_links()
+    with ThreadPoolExecutor(max_workers=20) as ex:
+        results = list(ex.map(check, links))
+
+    changed, unreadable, alerts = 0, [], 0
+    for name, url, found, err in results:
+        if err:
+            unreadable.append(f"{name} ({err})")
+            continue
+        entry = state.get(url)
+        if not isinstance(entry, dict) or "seen" not in entry:
+            state[url] = {"seen": list(found.keys())}  # baseline
+            continue
+        seen = set(entry["seen"])
+        new = [(u, t) for u, t in found.items() if u not in seen]
+        if new:
+            changed += 1
+            alerts += 1
+            msg = f"🔔 NEW UPDATE: {name}\n"
+            for u, t in new[:5]:
+                msg += f"\n• {t}\n{u}\n"
+            if len(new) > 5:
+                msg += f"\n+{len(new) - 5} more on {url}"
+            telegram(msg)
+            entry["seen"] = list((seen | set(found.keys())))[-500:]
+            state[url] = entry
+
+    # one summary when the unreadable list changes
+    if sorted(unreadable) != sorted(state.get("_unreadable", [])):
+        if unreadable:
+            telegram("⚠️ Cannot read these sites right now:\n" + "\n".join(unreadable))
+        state["_unreadable"] = unreadable
+
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f)
+
+    print(f"Checked {len(links)} links, {changed} changed, {len(unreadable)} unreadable")
+    for u in unreadable:
+        print("  unreadable:", u)
+
+
+if __name__ == "__main__":
+    main()
