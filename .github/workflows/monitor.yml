@@ -1,20 +1,17 @@
 name: Monitor links
-
 on:
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
-
 permissions:
   contents: write
-
 concurrency:
   group: monitor
   cancel-in-progress: false
-
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -31,6 +28,6 @@ jobs:
       - name: Save state
         run: |
           git config user.name "monitor-bot"
-          git config user.email "bot@noreply.github.com"
-          git add state.json
+          git config user.email "bot@users.noreply.github.com"
+          git add state.json || true
           git diff --cached --quiet || (git commit -m "update state" && git pull --rebase && git push)
