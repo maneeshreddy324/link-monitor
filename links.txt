@@ -1,9 +1,7 @@
 https://avherald.com/
 https://aviation-safety.net/
-https://www.ntsb.gov/pages/rss.aspx
 https://www.faa.gov/newsroom/press_releases/rss
 https://www.easa.europa.eu/en/rss
-https://aaib.gov.in/
 https://www.dgca.gov.in/
 https://skybrary.aero/
 https://www.flightglobal.com/
