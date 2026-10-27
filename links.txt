@@ -5,11 +5,8 @@ https://www.faa.gov/newsroom/press_releases/rss
 https://www.easa.europa.eu/en/rss
 https://aaib.gov.in/
 https://www.dgca.gov.in/
-https://bea.aero/
 https://skybrary.aero/
 https://www.flightglobal.com/
 https://www.aerotime.aero/
 https://simpleflying.com/
-https://www.aviation24.be/feed/
-https://www.flightradar24.com/blog/feed/
-https://aviatordb.com/rss/ntsb.xml
+
