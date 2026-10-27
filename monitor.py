@@ -275,5 +275,7 @@ def run_continuous_monitor():
         time.sleep(300)
 
 if __name__ == "__main__":
-    # Start the continuous 5-minute scraping cycle inside an isolated thread
     monitor_thread = threading.Thread(target=run_continuous_monitor, daemon=True)
+    monitor_thread.start()
+    
+    port = int(os.environ.get("PORT", 10000))
