@@ -89,6 +89,7 @@ SAFETY_TERMS = [
     "fuel leak", "oil leak", "uncontained engine failure",
 ]
 
+# These phrases already strongly imply an aircraft safety event.
 SPECIFIC_SAFETY_TERMS = [
     "emergency landing", "forced landing", "engine failure",
     "engine fire", "in-flight shutdown", "cabin pressure",
@@ -102,6 +103,7 @@ SPECIFIC_SAFETY_TERMS = [
 ]
 
 def compile_terms(terms):
+    # Whole-word match, allowing a plural ending (plane -> planes).
     return [
         re.compile(r"\b" + re.escape(term) + r"(?:s|es)?\b")
         for term in terms
@@ -116,9 +118,11 @@ def matches_any(text, patterns):
 
 def is_aircraft_safety_news(title, summary, url=""):
     text = f"{title} {summary} {url}".lower()
+
     has_safety_term = matches_any(text, SAFETY_PATTERNS)
     has_aircraft_term = matches_any(text, AIRCRAFT_PATTERNS)
     has_specific_term = matches_any(text, SPECIFIC_PATTERNS)
+
     return has_safety_term and (has_aircraft_term or has_specific_term)
 
 # ---------------- HTTP ----------------
@@ -126,6 +130,7 @@ def is_aircraft_safety_news(title, summary, url=""):
 def get_session():
     if not hasattr(thread_local, "session"):
         session = requests.Session()
+
         retry = Retry(
             total=2,
             connect=2,
@@ -135,15 +140,22 @@ def get_session():
             allowed_methods=["GET"],
             respect_retry_after_header=True,
         )
+
         adapter = HTTPAdapter(max_retries=retry)
         session.mount("http://", adapter)
         session.mount("https://", adapter)
         session.headers.update(HEADERS)
+
         thread_local.session = session
+
     return thread_local.session
 
 def fetch(url):
-    response = get_session().get(url, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+    response = get_session().get(
+        url,
+        timeout=REQUEST_TIMEOUT,
+        allow_redirects=True,
+    )
     response.raise_for_status()
     return response
 
@@ -153,11 +165,14 @@ def load_sources():
     sources = []
     if not os.path.exists(LINKS_FILE):
         return sources
+
     with open(LINKS_FILE, "r", encoding="utf-8-sig") as file:
         for line in file:
             line = line.strip()
+
             if not line or line.startswith("#"):
                 continue
+
             if "|" in line:
                 label, url = line.split("|", 1)
                 label = label.strip()
@@ -165,31 +180,46 @@ def load_sources():
             else:
                 url = line
                 label = urlparse(url).netloc
+
             if url.startswith(("http://", "https://")):
-                sources.append({"label": label or urlparse(url).netloc, "url": url})
+                sources.append({
+                    "label": label or urlparse(url).netloc,
+                    "url": url,
+                })
+
     return sources
 
 def new_state():
-    return {"seen_articles": {}, "feeds": {}, "initialized": False}
+    return {
+        "seen_articles": {},
+        "feeds": {},
+        "initialized": False,
+    }
 
 def load_state():
     if not os.path.exists(STATE_FILE):
         return new_state()
+
     try:
         with open(STATE_FILE, "r", encoding="utf-8") as file:
             state = json.load(file)
+
         state.setdefault("seen_articles", {})
         state.setdefault("feeds", {})
         state.setdefault("initialized", False)
+
         return state
+
     except (OSError, json.JSONDecodeError):
         logging.warning("Could not load state; creating a new state.")
         return new_state()
 
 def save_state(state):
     temp = STATE_FILE + ".tmp"
+
     with open(temp, "w", encoding="utf-8") as file:
         json.dump(state, file, indent=2, ensure_ascii=False)
+
     os.replace(temp, STATE_FILE)
 
 # ---------------- FEED PROCESSOR & TELEGRAM ----------------
@@ -199,7 +229,6 @@ def send_telegram(title, summary, url):
         logging.warning("Telegram configuration missing. Skipping message.")
         return
     
-    # Format message with HTML tags supported by Telegram
     message = f"🚨 <b>Aircraft Safety Update</b>\n\n<b>Title:</b> {title}\n\n<b>Summary:</b> {summary}\n\n<a href='{url}'>Read full article</a>"
     telegram_url = f"https://telegram.org{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "HTML"}
@@ -216,7 +245,6 @@ def process_source(source, state):
         response = fetch(source["url"])
         soup = BeautifulSoup(response.text, "html.parser")
         
-        # Scrape basic links/articles found on the target page
         found_articles = 0
         for anchor in soup.find_all("a", href=True):
             if found_articles >= MAX_ARTICLES_PER_FEED:
@@ -228,11 +256,9 @@ def process_source(source, state):
             if len(title) < 15 or not urlparse(link).scheme.startswith('http'):
                 continue
                 
-            # Create a simple hash ID for structural duplication filtering
             article_id = hashlib.md5(link.encode('utf-8')).hexdigest()
             
             if article_id not in state["seen_articles"]:
-                # Pass details directly through your keyword safety filter
                 if is_aircraft_safety_news(title, title, link):
                     logging.info(f"Match found: {title}")
                     if state.get("initialized", False):
@@ -265,9 +291,11 @@ def run_continuous_monitor():
             
             logging.info(f"Evaluating framework parameters across {len(sources)} tracking resources.")
             
-            # Use multi-threaded workers to scan multiple websites concurrently
             with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
                 futures = [executor.submit(process_source, src, state) for src in sources]
                 for future in as_completed(futures):
-                    pass # Dynamic extraction evaluation
+                    pass 
+            
+            state["initialized"] = True
+            save_state(state)
             
