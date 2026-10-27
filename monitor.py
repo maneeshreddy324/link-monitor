@@ -25,7 +25,6 @@ from bs4 import BeautifulSoup
 LINKS_FILE = "links.txt"
 STATE_FILE = "state.json"
 
-POLL_SECONDS = 120
 REQUEST_TIMEOUT = 15
 MAX_WORKERS = 12
 MAX_ARTICLES_PER_FEED = 100
@@ -105,14 +104,29 @@ SPECIFIC_SAFETY_TERMS = [
 ]
 
 
+def compile_terms(terms):
+    # Whole-word match, allowing a plural ending (plane -> planes).
+    return [
+        re.compile(r"\b" + re.escape(term) + r"(?:s|es)?\b")
+        for term in terms
+    ]
+
+
+AIRCRAFT_PATTERNS = compile_terms(AIRCRAFT_TERMS)
+SAFETY_PATTERNS = compile_terms(SAFETY_TERMS)
+SPECIFIC_PATTERNS = compile_terms(SPECIFIC_SAFETY_TERMS)
+
+
+def matches_any(text, patterns):
+    return any(pattern.search(text) for pattern in patterns)
+
+
 def is_aircraft_safety_news(title, summary, url=""):
     text = f"{title} {summary} {url}".lower()
 
-    has_safety_term = any(term in text for term in SAFETY_TERMS)
-    has_aircraft_term = any(term in text for term in AIRCRAFT_TERMS)
-    has_specific_term = any(
-        term in text for term in SPECIFIC_SAFETY_TERMS
-    )
+    has_safety_term = matches_any(text, SAFETY_PATTERNS)
+    has_aircraft_term = matches_any(text, AIRCRAFT_PATTERNS)
+    has_specific_term = matches_any(text, SPECIFIC_PATTERNS)
 
     return has_safety_term and (has_aircraft_term or has_specific_term)
 
@@ -182,13 +196,17 @@ def load_sources():
     return sources
 
 
+def new_state():
+    return {
+        "seen_articles": {},
+        "feeds": {},
+        "initialized": False,
+    }
+
+
 def load_state():
     if not os.path.exists(STATE_FILE):
-        return {
-            "seen_articles": {},
-            "feeds": {},
-            "initialized": False,
-        }
+        return new_state()
 
     try:
         with open(STATE_FILE, "r", encoding="utf-8") as file:
@@ -196,11 +214,7 @@ def load_state():
 
         # Migrate the older monitor's state format.
         if "seen_articles" not in state:
-            state = {
-                "seen_articles": {},
-                "feeds": {},
-                "initialized": False,
-            }
+            state = new_state()
 
         state.setdefault("seen_articles", {})
         state.setdefault("feeds", {})
@@ -210,11 +224,7 @@ def load_state():
 
     except (OSError, json.JSONDecodeError):
         logging.warning("Could not load state; creating a new state.")
-        return {
-            "seen_articles": {},
-            "feeds": {},
-            "initialized": False,
-        }
+        return new_state()
 
 
 def save_state(state):
@@ -563,7 +573,7 @@ def notify(article):
     )
 
 
-# ---------------- CONTINUOUS MONITOR ----------------
+# ---------------- ONE MONITORING CYCLE ----------------
 
 def run_cycle(state):
     sources = load_sources()
@@ -603,8 +613,9 @@ def run_cycle(state):
 
         if error:
             logging.warning(
-                "Source failed: %s — %s", source_url, error
+                "Source failed: %s - %s", source_url, error
             )
+            print("UNREADABLE:", source_url, "-", error)
             continue
 
         for article in articles:
@@ -659,20 +670,8 @@ def run_cycle(state):
 
 def main():
     logging.info("Aircraft safety monitor starting.")
-    logging.info("Polling interval: %d seconds", POLL_SECONDS)
-
     state = load_state()
-
-    while True:
-        started = time.monotonic()
-
-        try:
-            run_cycle(state)
-        except Exception:
-            logging.exception("Monitoring cycle failed.")
-
-        elapsed = time.monotonic() - started
-        time.sleep(max(5, POLL_SECONDS - elapsed))
+    run_cycle(state)
 
 
 if __name__ == "__main__":
