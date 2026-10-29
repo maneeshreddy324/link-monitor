@@ -1,460 +1,165 @@
 import os
-import re
-import json
 import time
 import hashlib
-import logging
-import threading
-import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
-from urllib.parse import urljoin, urlparse, urlunparse, parse_qsl, urlencode
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+import io
+import csv
 from bs4 import BeautifulSoup
+from pypdf import PdfReader
+import openpyxl
+import redis
 
+# 1. Initialization and Core Connections
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+REDIS_URL = os.getenv("REDIS_URL")
 
-# ================= SETTINGS (set these as Environment Variables on Render) =================
-
-LINKS_URL = os.getenv("LINKS_URL", "")            # raw GitHub link of links.txt (optional)
-LINKS_FILE = os.getenv("LINKS_FILE", "links.txt")  # used if LINKS_URL is empty or unreachable
-STATE_FILE = os.getenv("STATE_FILE", "state.json") # on Render: /data/state.json (persistent disk)
-POLL_SECONDS = int(os.getenv("POLL_SECONDS", "120"))
-REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "20"))
-MAX_WORKERS = int(os.getenv("MAX_WORKERS", "12"))
-MAX_MESSAGES_PER_CYCLE = int(os.getenv("MAX_MESSAGES_PER_CYCLE", "30"))
-PAGE_CHANGE_ALERTS = os.getenv("PAGE_CHANGE_ALERTS", "true").lower() == "true"
-
-# Leave KEYWORDS empty to get EVERY new article.
-# Or set e.g. KEYWORDS=crash,emergency landing,engine failure to get only matching ones.
-KEYWORDS = [k.strip().lower() for k in os.getenv("KEYWORDS", "").split(",") if k.strip()]
-
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
-
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-    ),
-    "Accept-Language": "en-US,en;q=0.9",
-}
-
-TRACKING_PARAMS = {"fbclid", "gclid", "igshid", "mc_cid", "mc_eid", "ref", "ref_src", "cmp", "ocid"}
-RECHECK_FEED_SECONDS = 24 * 3600
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-thread_local = threading.local()
-
-
-# ================= HTTP =================
-
-def get_session():
-    if not hasattr(thread_local, "session"):
-        session = requests.Session()
-        retry = Retry(
-            total=2, connect=2, read=2, backoff_factor=0.5,
-            status_forcelist=[429, 500, 502, 503, 504],
-            allowed_methods=["GET"], respect_retry_after_header=True,
-        )
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount("http://", adapter)
-        session.mount("https://", adapter)
-        session.headers.update(HEADERS)
-        thread_local.session = session
-    return thread_local.session
-
-
-def fetch(url, timeout=None):
-    response = get_session().get(url, timeout=timeout or REQUEST_TIMEOUT, allow_redirects=True)
-    response.raise_for_status()
-    return response
-
-
-# ================= LINKS AND STATE =================
-
-def read_links_text():
-    if LINKS_URL:
-        try:
-            r = requests.get(LINKS_URL, timeout=20, headers={"Cache-Control": "no-cache"})
-            r.raise_for_status()
-            return r.text
-        except Exception as error:
-            logging.warning("Could not read LINKS_URL (%s); using local file.", type(error).__name__)
-    with open(LINKS_FILE, "r", encoding="utf-8-sig") as file:
-        return file.read()
-
-
-def load_sources():
-    sources, seen_urls = [], set()
-    for line in read_links_text().splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if "|" in line:
-            label, url = [part.strip() for part in line.split("|", 1)]
-        else:
-            label, url = "", line
-        if not url.startswith(("http://", "https://")) or url in seen_urls:
-            continue
-        seen_urls.add(url)
-        sources.append({"label": label or urlparse(url).netloc, "url": url})
-    return sources
-
-
-def new_state():
-    return {"sources": {}, "seen": {}, "pending": [], "welcome_sent": False}
-
-
-def load_state():
-    if not os.path.exists(STATE_FILE):
-        return new_state()
+# Connect to Redis Memory (Fallback to internal RAM dict if variables are missing)
+if REDIS_URL:
     try:
-        with open(STATE_FILE, "r", encoding="utf-8") as file:
-            state = json.load(file)
-        base = new_state()
-        for key, value in base.items():
-            state.setdefault(key, value)
-        return state
-    except (OSError, json.JSONDecodeError):
-        logging.warning("Could not read state file; starting a new one.")
-        return new_state()
+        db = redis.Redis.from_url(REDIS_URL, decode_responses=True)
+        print("💾 Connected successfully to Render Redis permanent memory database.")
+    except Exception as e:
+        print(f"⚠️ Redis connection failed: {e}. Falling back to temporary local memory.")
+        db = {}
+else:
+    print("⚠️ REDIS_URL environment variable missing. Falling back to temporary local memory.")
+    db = {}
 
-
-def save_state(state):
-    folder = os.path.dirname(STATE_FILE)
-    if folder:
-        os.makedirs(folder, exist_ok=True)
-    temp = STATE_FILE + ".tmp"
-    with open(temp, "w", encoding="utf-8") as file:
-        json.dump(state, file, ensure_ascii=False)
-    os.replace(temp, STATE_FILE)
-
-
-# ================= ARTICLE IDENTITY (this is what stops repeats) =================
-
-def normalize_url(url):
-    p = urlparse(url.strip())
-    query = [
-        (k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
-        if not (k.lower().startswith("utm_") or k.lower() in TRACKING_PARAMS)
-    ]
-    path = p.path.rstrip("/") or "/"
-    return urlunparse((p.scheme.lower(), p.netloc.lower(), path, "", urlencode(query), ""))
-
-
-def article_id(article):
-    key = normalize_url(article["url"])
-    if article.get("sig"):
-        key += "#" + article["sig"]
-    return hashlib.sha1(key.encode("utf-8")).hexdigest()
-
-
-def matches_keywords(article):
-    if not KEYWORDS:
-        return True
-    text = f"{article['title']} {article.get('summary', '')}".lower()
-    return any(word in text for word in KEYWORDS)
-
-
-# ================= FEEDS =================
-
-def local_name(tag):
-    return tag.rsplit("}", 1)[-1].lower()
-
-
-def is_feed_xml(content):
-    try:
-        root = ET.fromstring(content)
-        names = {local_name(node.tag) for node in root.iter()}
-        return bool(names & {"rss", "feed", "rdf", "item", "entry"})
-    except ET.ParseError:
-        return False
-
-
-def child_text(element, names):
-    for child in element.iter():
-        if local_name(child.tag) in names:
-            text = "".join(child.itertext()).strip()
-            if text:
-                return text
-    return ""
-
-
-def entry_link(entry):
-    for child in list(entry):
-        if local_name(child.tag) == "link":
-            href = child.attrib.get("href")
-            if href and child.attrib.get("rel", "alternate") == "alternate":
-                return href
-            text = "".join(child.itertext()).strip()
-            if text.startswith(("http://", "https://")):
-                return text
-    for child in list(entry):
-        if local_name(child.tag) == "id":
-            value = "".join(child.itertext()).strip()
-            if value.startswith(("http://", "https://")):
-                return value
-    return ""
-
-
-def parse_feed_content(content, feed_url, source):
-    root = ET.fromstring(content)
-    entries = [n for n in root.iter() if local_name(n.tag) in ("item", "entry")]
-    articles = []
-    for entry in entries[:100]:
-        title = child_text(entry, {"title"})
-        link = entry_link(entry)
-        if not title or not link:
-            continue
-        summary = child_text(entry, {"description", "summary", "encoded", "content"})
-        summary = BeautifulSoup(summary, "html.parser").get_text(" ", strip=True)
-        articles.append({
-            "source": source["label"],
-            "title": title.strip(),
-            "url": urljoin(feed_url, link),
-            "summary": summary[:2000],
-        })
-    return articles
-
-
-def discover_feed(page_url, soup):
-    candidates = []
-    if soup is not None:
-        for element in soup.find_all("link", href=True):
-            rel = [str(v).lower() for v in element.get("rel", [])]
-            kind = element.get("type", "").lower()
-            if "alternate" in rel and ("rss" in kind or "atom" in kind or "xml" in kind):
-                candidates.append(urljoin(page_url, element["href"]))
-    p = urlparse(page_url)
-    origin = f"{p.scheme}://{p.netloc}"
-    here = page_url.split("?", 1)[0].rstrip("/")
-    for base in (here, origin):
-        for suffix in ("/feed", "/rss", "/rss.xml", "/feed.xml"):
-            candidates.append(base + suffix)
-    tried = set()
-    for candidate in candidates:
-        if candidate in tried:
-            continue
-        tried.add(candidate)
-        try:
-            response = fetch(candidate, timeout=10)
-            if is_feed_xml(response.content):
-                return response.url
-        except Exception:
-            continue
-    return ""
-
-
-# ================= PAGES WITHOUT A FEED =================
-
-def headline_links(soup, base_url):
-    host = urlparse(base_url).netloc.split(":")[0].lower()
-    base = ".".join(host.split(".")[-2:])
-    own = normalize_url(base_url)
-    found = {}
-    for anchor in soup.find_all("a", href=True):
-        text = " ".join(anchor.get_text(" ", strip=True).split())
-        if len(text) < 25 or len(text.split()) < 4:
-            continue
-        link = urljoin(base_url, anchor["href"])
-        p = urlparse(link)
-        if p.scheme not in ("http", "https"):
-            continue
-        if not p.netloc.split(":")[0].lower().endswith(base):
-            continue
-        if normalize_url(link) == own:
-            continue
-        found.setdefault(link, text)
-    return found
-
-
-def page_articles(response, source):
-    soup = BeautifulSoup(response.text, "html.parser")
-    title = (soup.title.string or "").strip() if soup.title else source["label"]
-    links = headline_links(soup, response.url)
-    if len(links) >= 5:  # a news list page: every headline is an article
-        return [
-            {"source": source["label"], "title": text, "url": link, "summary": ""}
-            for link, text in links.items()
-        ]
-    if not PAGE_CHANGE_ALERTS:
-        return []
-    for tag in soup(["script", "style", "noscript", "nav", "footer", "header", "aside", "iframe", "form"]):
-        tag.decompose()
-    root = soup.find("article") or soup.find("main") or soup.body or soup
-    text = re.sub(r"\s+", " ", root.get_text(" ")).strip()
-    if len(text) < 50:
-        raise ValueError("no readable content (login/blocked page)")
-    sig = hashlib.sha256((title + "|" + text[:150000]).encode("utf-8")).hexdigest()[:16]
-    return [{
-        "source": source["label"], "title": title or source["url"],
-        "url": source["url"], "summary": "", "sig": sig, "kind": "page",
-    }]
-
-
-# ================= ONE SOURCE =================
-
-def check_source(source, src_state):
-    url = source["url"]
-    feed_url = src_state.get("feed", "")
-    feed_checked = src_state.get("feed_checked", 0)
-    try:
-        if feed_url:
-            try:
-                response = fetch(feed_url)
-                return {"url": url, "feed": feed_url, "feed_checked": feed_checked,
-                        "articles": parse_feed_content(response.content, feed_url, source), "error": None}
-            except Exception:
-                feed_url = ""
-
-        response = fetch(url)
-        if is_feed_xml(response.content):
-            return {"url": url, "feed": response.url, "feed_checked": time.time(),
-                    "articles": parse_feed_content(response.content, response.url, source), "error": None}
-
-        soup = BeautifulSoup(response.text, "html.parser")
-        if time.time() - feed_checked > RECHECK_FEED_SECONDS:
-            feed_checked = time.time()
-            feed_url = discover_feed(response.url, soup)
-            if feed_url:
-                feed_response = fetch(feed_url)
-                return {"url": url, "feed": feed_url, "feed_checked": feed_checked,
-                        "articles": parse_feed_content(feed_response.content, feed_url, source), "error": None}
-
-        return {"url": url, "feed": "", "feed_checked": feed_checked,
-                "articles": page_articles(response, source), "error": None}
-    except Exception as error:
-        return {"url": url, "feed": feed_url, "feed_checked": feed_checked,
-                "articles": [], "error": f"{type(error).__name__}: {str(error)[:120]}"}
-
-
-# ================= TELEGRAM =================
-
-def send_telegram(text):
-    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
-        logging.error("Telegram secrets are missing.")
-        return False
-    api = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    for _ in range(3):
-        try:
-            r = requests.post(
-                api,
-                json={"chat_id": TELEGRAM_CHAT_ID, "text": text[:4000], "disable_web_page_preview": True},
-                timeout=20,
-            )
-            if r.status_code == 429:
-                wait = r.json().get("parameters", {}).get("retry_after", 5)
-                time.sleep(min(wait + 1, 60))
-                continue
-            r.raise_for_status()
+def is_duplicate(unique_key):
+    """Checks if this specific item fingerprint has been broadcasted before."""
+    if isinstance(db, redis.Redis):
+        if db.exists(unique_key):
             return True
-        except Exception as error:
-            # never log the exception text: it can contain the bot token
-            logging.error("Telegram send failed (%s)", type(error).__name__)
-            time.sleep(2)
-    return False
+        # Store hash in Redis for 30 days (2592000 seconds) to save space
+        db.setex(unique_key, 2592000, "sent")
+        return False
+    else:
+        if unique_key in db:
+            return True
+        db[unique_key] = "sent"
+        return False
 
-
-def format_message(article):
-    head = "🔄 Page updated" if article.get("kind") == "page" else "🚨 New article"
-    return f"{head}\n\n{article['title']}\n\nSource: {article['source']}\n{article['url']}"
-
-
-def flush_pending(state):
-    sent = 0
-    while state["pending"] and sent < MAX_MESSAGES_PER_CYCLE:
-        if not send_telegram(format_message(state["pending"][0])):
-            logging.warning("Telegram failed; the alert stays queued and will be retried.")
-            break
-        state["pending"].pop(0)   # removed only AFTER a successful send
-        sent += 1
-        save_state(state)
-        time.sleep(1.2)
-    if state["pending"]:
-        logging.info("%d alert(s) still waiting for the next cycle.", len(state["pending"]))
-    return sent
-
-
-# ================= ONE CHECK CYCLE =================
-
-def run_cycle(state):
-    sources = load_sources()
-    if not sources:
-        logging.error("No valid links found.")
+def send_telegram_alert(message):
+    """Dispatches unique content blocks directly to Telegram."""
+    if not BOT_TOKEN or not CHAT_ID:
+        print("❌ Telegram configuration environment variables missing.")
         return
+    url = f"https://telegram.org{BOT_TOKEN}/sendMessage"
+    payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "HTML"}
+    try:
+        requests.post(url, json=payload, timeout=10)
+    except Exception as e:
+        print(f"❌ Failed to dispatch message to Telegram: {e}")
 
-    results = []
-    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
-        futures = [
-            pool.submit(check_source, s, dict(state["sources"].get(s["url"], {})))
-            for s in sources
-        ]
-        for future in as_completed(futures):
-            try:
-                results.append(future.result())
-            except Exception as error:
-                logging.error("Worker failed (%s)", type(error).__name__)
+def create_hash(text):
+    """Generates an explicit signature string for any arbitrary data block."""
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
-    now = datetime.now(timezone.utc).isoformat()
-    seen = state["seen"]
-    unreadable = queued = 0
+# 2. Universal Multi-Document Smart Reader Logic
+def parse_and_notify_document(url, label="Airway Update"):
+    """Downloads and unifies standard text, HTML, RSS feeds, PDFs, CSVs, or Excel targets."""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, timeout=20)
+        response.raise_for_status()
+        content_type = response.headers.get('Content-Type', '').lower()
+        
+        extracted_items = []  # Tuples of (title/text, deep_link)
 
-    for r in results:
-        src = state["sources"].setdefault(r["url"], {})
-        if r["error"]:
-            unreadable += 1
-            src["fails"] = src.get("fails", 0) + 1
-            logging.warning("UNREADABLE %s - %s", r["url"], r["error"])
-            continue
-        src["fails"] = 0
-        src["feed"] = r["feed"]
-        src["feed_checked"] = r["feed_checked"]
-        first_time = not src.get("baselined")   # first read of a link = silent baseline
-        for article in r["articles"]:
-            aid = article_id(article)
-            if aid in seen:
-                continue
-            seen[aid] = now                      # marked as seen immediately => never alerted twice
-            if first_time:
-                continue
-            if matches_keywords(article):
-                state["pending"].append(article)
-                queued += 1
-        src["baselined"] = True
+        # CASE A: Portable Document Format (.pdf)
+        if "application/pdf" in content_type or url.lower().endswith(".pdf"):
+            with io.BytesIO(response.content) as f:
+                reader = PdfReader(f)
+                full_pdf_text = "".join([page.extract_text() for page in reader.pages if page.extract_text()])
+                lines = [line.strip() for line in full_pdf_text.split('\n') if len(line.strip()) > 15]
+                # Extract first few descriptive structural content blocks
+                for line in lines[:10]:
+                    extracted_items.append((f"PDF Record: {line}", url))
 
-    if len(seen) > 60000:
-        keep = sorted(seen.items(), key=lambda item: item[1], reverse=True)[:40000]
-        state["seen"] = dict(keep)
+        # CASE B: Microsoft Excel Sheets (.xlsx)
+        elif "spreadsheet" in content_type or url.lower().endswith(".xlsx"):
+            wb = openpyxl.load_workbook(io.BytesIO(response.content), data_only=True)
+            sheet = wb.active
+            for row in sheet.iter_rows(values_only=True):
+                row_str = " | ".join([str(cell) for cell in row if cell is not None])
+                if len(row_str.strip()) > 10:
+                    extracted_items.append((f"Spreadsheet Row: {row_str}", url))
 
-    save_state(state)
-    sent = flush_pending(state)
-    logging.info("Cycle done: %d links, %d unreadable, %d new, %d sent.",
-                 len(sources), unreadable, queued, sent)
+        # CASE C: Comma Separated Tables (.csv)
+        elif "text/csv" in content_type or url.lower().endswith(".csv"):
+            csv_text = response.content.decode('utf-8-sig', errors='ignore')
+            reader = csv.reader(io.StringIO(csv_text))
+            for row in reader:
+                row_str = " , ".join(row)
+                if len(row_str.strip()) > 10:
+                    extracted_items.append((f"CSV Row: {row_str}", url))
 
+        # CASE D: XML Feeds / Official RSS Layouts
+        elif "xml" in content_type or "rss" in content_type:
+            soup = BeautifulSoup(response.content, "xml")
+            items = soup.find_all(["item", "entry"])
+            for item in items:
+                title = item.find("title").get_text().strip() if item.find("title") else "Untitled Notification"
+                link_tag = item.find("link")
+                link = link_tag.get_text().strip() if link_tag else url
+                if link_tag and link_tag.has_attr('href'):
+                    link = link_tag['href']
+                extracted_items.append((title, link))
 
-def main():
-    logging.info("Link monitor starting. Interval: %ds. Keywords: %s",
-                 POLL_SECONDS, ", ".join(KEYWORDS) or "none (all new articles)")
-    state = load_state()
+        # CASE E: Traditional HTML Web Pages
+        else:
+            soup = BeautifulSoup(response.content, "html.parser")
+            # Clear noise tags to find clean structural context
+            for script in soup(["script", "style"]):
+                script.decompose()
+            
+            # Extract links with meaningful text strings
+            for a_tag in soup.find_all("a", href=True):
+                text = a_tag.get_text().strip()
+                if len(text) > 12:
+                    link = a_tag['href'] if a_tag['href'].startswith('http') else f"{url.rstrip('/')}/{a_tag['href'].lstrip('/')}"
+                    extracted_items.append((text, link))
 
-    if not state.get("welcome_sent"):
-        count = len(load_sources())
-        if send_telegram(f"✅ Link monitor is running and watching {count} links.\n"
-                         "You will only get a message when something NEW appears."):
-            state["welcome_sent"] = True
-            save_state(state)
+        # 3. Duplicate Prevention Verification Cycle
+        new_updates_sent = 0
+        for title_text, destination_url in extracted_items:
+            # Create unique fingerprint matching both title text and target URL
+            fingerprint = create_hash(f"{title_text}{destination_url}")
+            
+            if not is_duplicate(fingerprint):
+                alert_body = f"🔔 <b>{label}</b>\n\n{title_text}\n\n🔗 <a href='{destination_url}'>Source Link</a>"
+                send_telegram_alert(alert_body)
+                new_updates_sent += 1
+                time.sleep(1.5) # Anti-flood interval throttle
+                
+        if new_updates_sent == 0:
+            print(f"ℹ️ Scanned {label}: No new updates found. Skipping duplicates.")
 
-    while True:
-        started = time.monotonic()
-        try:
-            run_cycle(state)
-        except Exception as error:
-            logging.error("Cycle failed (%s)", type(error).__name__)
-        time.sleep(max(10, POLL_SECONDS - (time.monotonic() - started)))
+    except Exception as e:
+        # Fallback alert: Sends the notification even if a private or broken link fails entirely
+        error_fingerprint = create_hash(f"error-{url}-{str(e)[:30]}")
+        if not is_duplicate(error_fingerprint):
+            error_alert = f"⚠️ <b>PRIVATE/UNREADABLE AIRWAY SOURCE</b>\n\n<b>Source:</b> {label}\n<b>URL:</b> {url}\n<b>Error Details:</b> {str(e)}"
+            send_telegram_alert(error_alert)
 
-
+# 4. Monitored Portfolios Execution Engine
 if __name__ == "__main__":
-    main()
+    print("🚀 Running complete multi-document airway monitor...")
+    
+    # Target configurations (Provide any site, XML feed, PDF link, CSV, or spreadsheet)
+    targets = [
+        {"url": "https://aviation-safety.net", "label": "Aviation Safety Net"},
+        {"url": "https://faa.gov", "label": "FAA Newsroom Feed"},
+        # You can append raw doc references at any time:
+        # {"url": "https://example.com", "label": "CSV Metrics"},
+        # {"url": "https://example.com", "label": "PDF Briefing"}
+    ]
+    
+    for target in targets:
+        parse_and_notify_document(target["url"], target["label"])
+        
+    print("✅ Run execution sequence finished.")
