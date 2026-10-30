@@ -246,7 +246,7 @@ def matches_safety_filter(text):
 def extract_document_items(url):
     extracted = []
     
-    # Strip messy social anchors (like #google_vignette) before processing network calls
+    # Strip messy social anchors before processing network calls
     clean_target_url = url.split('#')[0]
     
     response = session.get(clean_target_url, timeout=REQUEST_TIMEOUT)
