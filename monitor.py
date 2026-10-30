@@ -56,6 +56,7 @@ log = logging.getLogger("aviation-monitor")
 
 app = Flask(__name__)
 
+# Configure an advanced browser session profile to unlock protected links
 session = requests.Session()
 session.mount("https://", TLSAdapter())
 session.headers.update({
@@ -209,6 +210,26 @@ def finish_item(source_id, fingerprint, delivered):
             local_seen.discard(source_id + ":" + fingerprint)
 
 # ============================================================
+# 6. TELEGRAM ALERT DELIVERY
+# ============================================================
+
+def send_telegram_alert(message):
+    if not BOT_TOKEN or not CHAT_ID:
+        log.error("Telegram configuration missing. Check environment variables.")
+        return
+    url = f"https://telegram.org{BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": CHAT_ID, "text": message, "parse_mode": "HTML",
+        "disable_web_page_preview": False
+    }
+    try:
+        res = requests.post(url, json=payload, timeout=10)
+        if res.status_code != 200:
+            log.error(f"Telegram API failure: {res.status_code} - {res.text}")
+    except Exception:
+        log.exception("Failed to dispatch alert to Telegram endpoint.")
+
+# ============================================================
 # 7. MULTI-DOCUMENT SMART PARSERS
 # ============================================================
 
@@ -221,7 +242,7 @@ def matches_safety_filter(text):
 def extract_document_items(url):
     extracted = []
     
-    # Corrected text string slicing layout
+    # Safe text string split extraction method
     target_url_clean = url.split('#')[0]
     
     response = session.get(target_url_clean, timeout=REQUEST_TIMEOUT)
@@ -245,19 +266,3 @@ def extract_document_items(url):
                 extracted.append((f"Excel Sheet Entry: {row_str}", target_url_clean))
 
     elif "text/csv" in content_type or target_url_clean.lower().endswith(".csv"):
-        csv_text = response.content.decode("utf-8-sig", errors="ignore")
-        reader = csv.reader(io.StringIO(csv_text))
-        for row in reader:
-            row_str = " , ".join(row)
-            if len(row_str.strip()) > 10:
-                extracted.append((f"CSV Line Block: {row_str}", target_url_clean))
-
-    elif "xml" in content_type or "rss" in content_type or target_url_clean.lower().endswith((".xml", ".rss")):
-        soup = BeautifulSoup(response.content, "xml")
-        items = soup.find_all(["item", "entry"])
-        for item in items:
-            title = item.find("title").get_text().strip() if item.find("title") else "Untitled Event"
-            l_tag = item.find("link")
-            link = l_tag.get_text().strip() if l_tag else target_url_clean
-            if l_tag and l_tag.has_attr("href"):
-                link = l_tag["href"]
