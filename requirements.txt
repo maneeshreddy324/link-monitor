@@ -1,6 +1,8 @@
-beautifulsoup4==4.12.3
-requests==2.32.3
-lxml==5.3.0
-openpyxl==3.1.5
-pypdf==5.1.0
-redis==5.0.8
+Flask
+gunicorn
+requests
+beautifulsoup4
+lxml
+pypdf
+openpyxl
+redis
