@@ -14,7 +14,7 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 REDIS_URL = os.getenv("REDIS_URL")
 
-# Connect to Redis Memory (Fallback to internal RAM dict if variables are missing)
+# Connect to Redis Memory (With standard internal RAM fallback)
 if REDIS_URL:
     try:
         db = redis.Redis.from_url(REDIS_URL, decode_responses=True)
@@ -76,8 +76,7 @@ def parse_and_notify_document(url, label="Airway Update"):
                 reader = PdfReader(f)
                 full_pdf_text = "".join([page.extract_text() for page in reader.pages if page.extract_text()])
                 lines = [line.strip() for line in full_pdf_text.split('\n') if len(line.strip()) > 15]
-                # Extract first few descriptive structural content blocks
-                for line in lines[:10]:
+                for line in lines[:15]:
                     extracted_items.append((f"PDF Record: {line}", url))
 
         # CASE B: Microsoft Excel Sheets (.xlsx)
@@ -113,7 +112,6 @@ def parse_and_notify_document(url, label="Airway Update"):
         # CASE E: Traditional HTML Web Pages
         else:
             soup = BeautifulSoup(response.content, "html.parser")
-            # Clear noise tags to find clean structural context
             for script in soup(["script", "style"]):
                 script.decompose()
             
@@ -127,7 +125,6 @@ def parse_and_notify_document(url, label="Airway Update"):
         # 3. Duplicate Prevention Verification Cycle
         new_updates_sent = 0
         for title_text, destination_url in extracted_items:
-            # Create unique fingerprint matching both title text and target URL
             fingerprint = create_hash(f"{title_text}{destination_url}")
             
             if not is_duplicate(fingerprint):
@@ -137,29 +134,34 @@ def parse_and_notify_document(url, label="Airway Update"):
                 time.sleep(1.5) # Anti-flood interval throttle
                 
         if new_updates_sent == 0:
-            print(f"ℹ️ Scanned {label}: No new updates found. Skipping duplicates.")
+            print(f"ℹ️ Scanned {label}: No new updates found.")
 
     except Exception as e:
-        # Fallback alert: Sends the notification even if a private or broken link fails entirely
         error_fingerprint = create_hash(f"error-{url}-{str(e)[:30]}")
         if not is_duplicate(error_fingerprint):
             error_alert = f"⚠️ <b>PRIVATE/UNREADABLE AIRWAY SOURCE</b>\n\n<b>Source:</b> {label}\n<b>URL:</b> {url}\n<b>Error Details:</b> {str(e)}"
             send_telegram_alert(error_alert)
 
-# 4. Monitored Portfolios Execution Engine
+# 4. Core Script Engine Execution
 if __name__ == "__main__":
     print("🚀 Running complete multi-document airway monitor...")
     
-    # Target configurations (Provide any site, XML feed, PDF link, CSV, or spreadsheet)
-    targets = [
-        {"url": "https://aviation-safety.net", "label": "Aviation Safety Net"},
-        {"url": "https://faa.gov", "label": "FAA Newsroom Feed"},
-        # You can append raw doc references at any time:
-        # {"url": "https://example.com", "label": "CSV Metrics"},
-        # {"url": "https://example.com", "label": "PDF Briefing"}
-    ]
-    
-    for target in targets:
-        parse_and_notify_document(target["url"], target["label"])
+    # Dynamically loads links straight from your repository's links.txt file
+    links_file = "links.txt"
+    if os.path.exists(links_file):
+        with open(links_file, "r") as f:
+            target_urls = [line.strip() for line in f if line.strip() and not line.startswith("#")]
+        
+        print(f"📋 Found {len(target_urls)} monitoring URLs inside links.txt")
+        
+        for url in target_urls:
+            # Extract a clean shorthand label from the domain name
+            domain_label = url.replace("https://", "").replace("http://", "").split("/")[0]
+            parse_and_notify_document(url, label=domain_label)
+    else:
+        print("❌ ERROR: links.txt file not found in directory. Running baseline configurations.")
+        # Baseline fallback targets if links.txt is missing
+        parse_and_notify_document("https://aviation-safety.net", "Aviation Safety Net")
+        parse_and_notify_document("https://faa.gov", "FAA Newsroom Feed")
         
     print("✅ Run execution sequence finished.")
